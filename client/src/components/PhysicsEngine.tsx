@@ -9,6 +9,19 @@ const MARBLE_COLORS: Record<MarbleColor, string> = {
   green: "#22C55E",
   blue: "#3B82F6",
   purple: "#A855F7",
+  steel: "#9CA3AF",
+  black: "#1F2937",
+};
+
+export const MARBLE_PROPERTIES: Record<MarbleColor, { density: number; restitution: number; friction: number; radius: number }> = {
+  red: { density: 0.001, restitution: 0.6, friction: 0.05, radius: 15 },
+  orange: { density: 0.001, restitution: 0.6, friction: 0.05, radius: 15 },
+  yellow: { density: 0.001, restitution: 0.6, friction: 0.05, radius: 15 },
+  green: { density: 0.001, restitution: 0.6, friction: 0.05, radius: 15 },
+  blue: { density: 0.001, restitution: 0.6, friction: 0.05, radius: 15 },
+  purple: { density: 0.001, restitution: 0.6, friction: 0.05, radius: 15 },
+  steel: { density: 0.003, restitution: 0.4, friction: 0.08, radius: 15 },
+  black: { density: 0.001, restitution: 0.6, friction: 0.05, radius: 15 },
 };
 
 export interface PhysicsEngineRef {
@@ -274,10 +287,11 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost }: Props) => {
       return;
     }
 
-    const marble = Matter.Bodies.circle(600, 160, 15, {
-      restitution: 0.6,
-      friction: 0.05,
-      density: 0.001,
+    const props = MARBLE_PROPERTIES[color];
+    const marble = Matter.Bodies.circle(600, 160, props.radius, {
+      restitution: props.restitution,
+      friction: props.friction,
+      density: props.density,
       render: {
         fillStyle: MARBLE_COLORS[color],
         strokeStyle: "#ffffff",
@@ -291,7 +305,7 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost }: Props) => {
     Matter.Composite.add(engineRef.current.world, marble);
     marbleBodiesRef.current.set(marbleId, { body: marble, color, timestamp: Date.now() });
     
-    console.log(`Dropped ${color} marble into physics world at position (600, 160)`);
+    console.log(`Dropped ${color} marble (density: ${props.density}) into physics world at position (600, 160)`);
   };
 
   useEffect(() => {

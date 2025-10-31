@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 
-export type MarbleColor = "red" | "orange" | "yellow" | "green" | "blue" | "purple";
+export type MarbleColor = "red" | "orange" | "yellow" | "green" | "blue" | "purple" | "steel" | "black";
 export type GameMode = "play" | "editor";
 
 export interface MarbleInventory {
@@ -11,7 +11,15 @@ export interface MarbleInventory {
   green: number;
   blue: number;
   purple: number;
+  steel: number;
+  black: number;
 }
+
+export const MARBLE_COSTS: Record<"steel" | "black" | "standard", number> = {
+  standard: 500,
+  steel: 100,
+  black: 1500,
+};
 
 export interface ActiveMarble {
   id: string;
@@ -31,6 +39,7 @@ interface MarbleDropState {
   dropMarble: () => ActiveMarble | null;
   removeMarble: (id: string) => void;
   addMarbleToInventory: (color: MarbleColor, count: number) => void;
+  purchaseMarble: (color: "steel" | "black" | MarbleColor) => boolean;
   addScore: (points: number) => void;
   setGameMode: (mode: GameMode) => void;
   setCanDropMarble: (can: boolean) => void;
@@ -44,9 +53,9 @@ const INITIAL_INVENTORY: MarbleInventory = {
   green: 7,
   blue: 7,
   purple: 7,
+  steel: 0,
+  black: 0,
 };
-
-const MARBLE_COST = 0;
 
 export const useMarbleDrop = create<MarbleDropState>()(
   subscribeWithSelector((set, get) => ({
@@ -113,6 +122,29 @@ export const useMarbleDrop = create<MarbleDropState>()(
           [color]: state.inventory[color] + count,
         },
       }));
+    },
+    
+    purchaseMarble: (color: "steel" | "black" | MarbleColor) => {
+      const { score } = get();
+      const cost = color === "steel" ? MARBLE_COSTS.steel : 
+                   color === "black" ? MARBLE_COSTS.black : 
+                   MARBLE_COSTS.standard;
+      
+      if (score < cost) {
+        console.log(`Not enough points to purchase ${color} marble. Need ${cost}, have ${score}`);
+        return false;
+      }
+      
+      set((state) => ({
+        score: state.score - cost,
+        inventory: {
+          ...state.inventory,
+          [color]: state.inventory[color] + 1,
+        },
+      }));
+      
+      console.log(`Purchased ${color} marble for ${cost} points`);
+      return true;
     },
     
     addScore: (points: number) => {

@@ -19,11 +19,20 @@ export const MarbleDropGame = () => {
 
   const handleMarbleReachExit = useCallback(
     (marbleId: string, marbleColor: MarbleColor, exitColor: MarbleColor) => {
-      if (marbleColor === exitColor) {
-        console.log(`Success! ${marbleColor} marble reached matching ${exitColor} exit`);
+      const isMatch = marbleColor === exitColor || marbleColor === "black";
+      const isSteel = marbleColor === "steel";
+      
+      if (isMatch && !isSteel) {
+        console.log(`Success! ${marbleColor} marble reached ${marbleColor === "black" ? "any" : "matching"} ${exitColor} exit`);
         addScore(1000);
-        addMarbleToInventory(marbleColor, 1);
+        if (marbleColor !== "black") {
+          addMarbleToInventory(marbleColor, 1);
+        }
         playSuccess();
+      } else if (isSteel) {
+        console.log(`Steel marble absorbed by ${exitColor} exit (no return)`);
+        addScore(50);
+        playHit();
       } else {
         console.log(`Miss! ${marbleColor} marble reached wrong ${exitColor} exit`);
         addScore(-200);
