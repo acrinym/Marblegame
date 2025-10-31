@@ -1,0 +1,48 @@
+That is a fantastic idea, Justin! Shifting your development environment to Replit is smart for a web-based game, as it provides an immediate environment for coding, testing, and deployment.
+Given your request for a verbose, holographic, and layered prompt that includes context, resources, and project scope—and aligning with your preference for full code output—I have designed a comprehensive prompt for the LLM.
+Since we are now targeting Replit, which is primarily a web environment, I have chosen JavaScript with the Phaser 3 game framework as the most suitable technology. Phaser is a robust, well-documented engine perfect for 2D physics-based games like Marble Drop, and it runs beautifully in Replit's web environment.
+Here is the complete, multi-layered prompt, ready for you to copy and paste into your LLM of choice.
+Comprehensive LLM Prompt for Marble Drop Clone
+1. LLM Persona and Project Directives
+You are an expert game developer specializing in 2D physics puzzles, particularly Rube Goldberg-style contraptions, and proficient in JavaScript/Phaser 3. Your goal is to generate a complete, well-commented, and runnable project for the user, who intends to clone and reimagine the classic Maxis game Marble Drop.
+Crucial Constraints & Requirements (The "Holographic Layers"):
+ * Environment: All code must be runnable within a standard Replit project using Node.js/npm and the Phaser 3 game framework (or a minimal alternative if Phaser proves too complex for a simple Replit setup, like Matter.js directly on an HTML5 canvas). Prioritize Phaser 3.
+ * Code Output: Provide the complete code for ALL requested files (e.g., index.html, script.js, style.css, etc.) in their entirety. Do not use brevity or placeholders. If the total code exceeds the workspace limit, split the output into clearly labeled, sequential turns.
+ * Aesthetic Layer (Schauberger Theme): The code structure must support a unique visual and mechanical theme inspired by Victor Schauberger (vortexes, implosion, flowing water, copper/natural materials). Components should use placeholder graphics (e.g., colored rectangles or circles) but must be named and structured to reflect this theme (e.g., VortexFunnel instead of StartTube).
+ * Physics Core: The game must use a robust 2D physics engine (Phaser's built-in Arcade Physics or Matter.js) to handle circular marbles that roll, bounce, and interact realistically with contraption pieces.
+2. Game Overview and Core Mechanics
+The game is a 2D physics puzzle where the player strategically places pre-built contraption components onto a blueprint-style background to guide various types of marbles from a start point to a target goal (Exit Bins).
+| Mechanic | Description |
+|---|---|
+| Marbles | Marbles are circular physics bodies. The initial implementation must support at least three types: Standard (default), Colored (interacts with special pieces), and Steel (heavier, higher density). |
+| Interaction | The core loop is: 1) Place contraptions (via an editor), 2) Release a marble, 3) Marble interacts with contraptions, 4) Marble reaches or fails to reach an Exit Bin. |
+| Aesthetics | The visual design should be based on Schauberger's organic/vortex-based mechanical designs (e.g., copper pipes, spiral funnels, flowing energy visuals) rather than clockwork mechanics. |
+3. Initial Code Setup and Project Scope
+Generate the starting files for the Replit project that includes:
+ * A basic Phaser 3 Scene (GameScene).
+ * A system to load the game and manage a single, draggable Marble object.
+ * A dedicated Level Editor Mode (activated by a keyboard press, e.g., 'E') and a Game Mode (activated by 'G').
+ * The implementation of the two most fundamental contraption pieces from the list below.
+A. Initial Contraption Component List (To be implemented first):
+The first runnable code must include the following two components as functional, static physics objects:
+ * Track Variant (Curved): A simple, static curved path that the marble must roll smoothly along. This tests the 2D physics engine's ability to handle slopes and curves.
+ * Vortex Funnel/Chamber (Schauberger Themed Start Point): The starting point for the marble. When activated, it should apply an initial force to the marble, suggesting a spiral/vortex launch. Implement the release mechanic (e.g., a mouse click releases the marble from the funnel).
+B. Full Component Inventory (For Future Implementation - Structure the code to easily add these):
+The final code must include placeholder classes or functions for these pieces to ensure the architecture is sound for expansion.
+| Original Marble Drop Components | Schauberger-Inspired Components |
+|---|---|
+| Diverter (Toggles path based on state) | Vortex Funnel/Chamber (Start point with spiral launch) |
+| Lift (Moves marble vertically) | Implosion Device (A destructive component, themed as a contained vortex) |
+| Brake (Slows marble) | Copper Energy Coils (Track segment that boosts marble speed) |
+| Target (Hit-able object) | Water-Jet Propulsor (Applies constant, directional force) |
+| Buzz Saw (Hazard/Destructor) | Spinner/Flow Form (Rotates and flings marbles using centrifugal force) |
+| Painter (Changes marble color) | Egg-Shaped Vessel (A container for color-changing or property modification) |
+| Teleporter (Instant jump) |  |
+4. Resources (Context for the LLM)
+The original game features an extensive set of components. The following link and list provide the required context for the project's scope and necessary mechanics:
+ * Game Manual/Reference: https://www.maxlaumeister.com/marble-drop/in-game-help/qzywi-17b6h
+ * Key Component Names (Context for Logic): Sorting Tube, Exit Track, Exit Bins, Track Variants, Diverter, Brake, Lift, Target, Pendulum, Spring, Trigger, Cannon, Heater, Freezer, Teleporter, Glue, Fuse, Painter, Timer, Destructor, Splitter, Marble Generator, Merger, Counter, Holding Tube, Spinner, Triggered Diverter, Colored Marbles, Black Marbles, Steel Marbles, Swiveling Target, Blocker, Three-way Horizontal Diverter, Secret Bonus Device.
+5. Final Output Request
+Generate the complete, runnable code for a Replit JavaScript/Phaser 3 project that achieves the Initial Code Setup (Sections 3.A and 4). Include comments detailing where the additional components (Section 3.B) should be implemented.
+(Wait for the LLM to generate the full code, providing verbose output in a split format if necessary.)
+
