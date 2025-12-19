@@ -1,0 +1,193 @@
+================================================================================
+HOLOGRAPHIC THINKING FOR CHATGPT - QUICK START
+================================================================================
+
+WHAT IS THIS?
+A self-contained AI reasoning system with 10 parallel engines that analyzes
+any question from ALL angles simultaneously, then synthesizes into insight.
+
+HOW TO USE IT (2 MINUTES)
+1. Read this file (you're reading it!)
+2. Open INDEX.md to understand the structure
+3. Ask me any question
+4. I'll apply holographic thinking automatically
+
+FILES TO READ (BY PRIORITY)
+
+FIRST (Essential - 10 min total):
+  • README.md ................... What it is, how to use
+  • INDEX.md .................... Where to find everything
+
+NEXT (Understanding - 15 min total):
+  • ARCHITECTURE.md ............. How 10 engines work together
+  • examples/example-1-simple.md  See it in action (20 min)
+
+OPTIONAL (Deep dive - 15 min):
+  • prompts/core-thinking.md .... The master prompt I use
+  • engines/00-harm-evaluation.md How safety works
+
+THE 10 ENGINES (QUICK REFERENCE)
+
+[0] HARM EVALUATION - Safety check first (CLEAR / WARNING / VETO)
+[1] ORACLE - 6 parallel perspectives on the problem
+[2] MECHANICAL - Break into components and relationships
+[3] TRIBUNAL - Weigh evidence and judge competing claims
+[4] EDGE CASES - Find critical risks and breaking points
+[5] MULTISOURCE - Cross-domain insights from other fields
+[6] SYNTHESIS - Integrate all results into one answer
+[7] MEMORY - Recall context from conversation history
+[8] LEARNING - Track outcomes and improve
+[9] AFFECT - Emotional and psychological factors
+
+All run in PARALLEL, then integrate into coherent analysis.
+
+EXAMPLE INPUT/OUTPUT
+
+Input: "Should I take this job offer?"
+
+Output: 
+  • Overall verdict with confidence
+  • 6+ perspectives analyzed
+  • System components & risks
+  • Evidence-weighted judgment
+  • Critical edge cases & mitigations
+  • Cross-domain insights
+  • Action plan with metrics
+  • Caveats & uncertainties
+
+Total time: 2-5 minutes for comprehensive analysis
+Confidence: Explicitly stated throughout
+
+HOW TO CUSTOMIZE
+
+Change depth:         "Use depth=1 for quick take" or "depth=5 for thorough"
+Emphasize engines:    "Focus on mechanical and edge cases"
+Add constraints:      "I value X most" or "timeline is Y"
+Specify dimensions:   "Analyze from psychology and economics"
+Adjust memory:        "Start fresh (new_context)" or "Remember our talk"
+
+WHAT MAKES THIS DIFFERENT
+
+vs Linear thinking:
+  ✓ Explores 6+ perspectives simultaneously (not one after another)
+  ✓ Weights evidence by reliability (not just averaging)
+  ✓ Deep systems understanding (not just what, but how)
+  ✓ Risk awareness built-in (not afterthought)
+  ✓ Moral safety engine runs first (not optional)
+
+vs Casual advice:
+  ✓ Shows all reasoning (not just conclusion)
+  ✓ Acknowledges uncertainty clearly (not false confidence)
+  ✓ Learns from outcomes (not static)
+  ✓ Integrates emotional factors (not dismissed)
+
+WHEN TO USE THIS
+
+✓ Complex decisions with competing values
+✓ Understanding systems deeply
+✓ Finding blind spots and risks
+✓ High-stakes choices
+✓ Exploring topics thoroughly
+✓ Getting unstuck on problems
+
+✗ Quick factual lookups (overkill for "What's the capital?")
+✗ Yes/no emergencies (takes 2-5 minutes)
+✗ Trivial questions (don't need this depth)
+✗ Real-time data (knowledge cutoff limits me)
+
+GETTING STARTED NOW
+
+Step 1: Ask me a question (any topic)
+  "What should I do about [situation]?"
+  "Help me understand [topic]"
+  "I'm struggling with [problem]"
+
+Step 2: I'll apply all 10 engines in parallel
+
+Step 3: You get comprehensive analysis with:
+  - Multiple perspectives
+  - Risk analysis
+  - Cross-domain insights
+  - Clear action plan
+  - Honest caveats
+
+Step 4: Ask follow-ups (memory will integrate context)
+
+EXAMPLE QUESTIONS
+
+"I'm thinking about changing careers. What should I consider?"
+→ Analyzes financial, emotional, risk, timeline, family impact, etc.
+
+"Help me understand machine learning"
+→ Breaks down conceptually, shows mechanical understanding,
+  cross-domain patterns, practical applications
+
+"I'm stuck in a conflict with a family member. What am I missing?"
+→ Explores all perspectives, psychological factors, systemic issues,
+  edge cases, actionable steps
+
+"Is this a good business idea?"
+→ Market analysis, technical feasibility, risk assessment,
+  competition, execution challenges, timeline
+
+KEY FEATURES
+
+🔄 True Parallelism
+   All engines run simultaneously, creating unbiased analysis
+
+🛡️ Moral Safety First
+   Harm evaluation has veto power before deep analysis
+
+🧠 Systems Thinking
+   Understands components, relationships, single points of failure
+
+📊 Evidence Weighted
+   Perspectives judged by evidence quality, not just counted
+
+💾 Memory & Learning
+   Remembers conversation, learns from outcomes, improves
+
+💓 Emotional Intelligence
+   Recognizes emotions as valid data, psychological factors matter
+
+📉 Honest Uncertainty
+   Shows confidence levels, acknowledges what's unknown
+
+🎯 Action Oriented
+   Gives you clear next steps with success metrics
+
+QUESTIONS BEFORE YOU START?
+
+Q: "Will you make my decision for me?"
+A: No. I'll analyze deeply so you make better decisions consciously.
+
+Q: "How long does analysis take?"
+A: 2-5 minutes depending on depth. Shows all reasoning.
+
+Q: "What if you're wrong?"
+A: I show confidence levels. Use feedback to improve next time.
+
+Q: "Can you keep secrets?"
+A: No conversation data persists. Each session is fresh unless you
+   specify memory mode.
+
+Q: "What's the difference from ChatGPT's normal thinking?"
+A: This system explicitly uses 10 different reasoning engines in parallel,
+   with evidence-weighting, mechanical understanding, and integrated
+   learning. Normal thinking is more sequential and uncertain.
+
+READY?
+
+1. Open INDEX.md (1 minute to see file structure)
+2. Ask me any question
+3. Experience holographic analysis
+
+The system is ready. Your thinking is about to get a lot deeper.
+
+Let's go.
+
+================================================================================
+For full documentation, see: INDEX.md → README.md → ARCHITECTURE.md
+For working example, see: examples/example-1-simple.md
+For how I think, see: prompts/core-thinking.md
+================================================================================

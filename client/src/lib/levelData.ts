@@ -31,43 +31,34 @@ export const BUILT_IN_LEVELS: LevelData[] = [
     targetScore: 5000,
     leonardoNote: "Every journey begins with a single marble. Master the fundamentals before reaching for the stars.",
     contraptions: [
-      // Entry funnel at center top
-      { id: "funnel-1", type: "entryFunnel", x: 600, y: 50 },
+      // Entry funnel at center top - marble drops through gap at bottom
+      { id: "funnel-1", type: "entryFunnel", x: 600, y: 80 },
 
-      // Initial drop catches marble and guides left or right
-      { id: "track-initial-left", type: "track", x: 550, y: 150, angle: Math.PI / 6, state: { length: 120 } },
-      { id: "track-initial-right", type: "track", x: 650, y: 150, angle: -Math.PI / 6, state: { length: 120 } },
+      // Catch track directly below funnel - slight angle to roll marble right
+      { id: "track-catch", type: "track", x: 600, y: 140, angle: Math.PI / 12, state: { length: 200 } },
       
-      // Main diverter in center
-      { id: "diverter-1", type: "diverter", x: 600, y: 250 },
+      // Main diverter - toggles path
+      { id: "diverter-1", type: "diverter", x: 700, y: 200 },
       
       // Left path - leads to red bin
-      { id: "track-left-1", type: "track", x: 450, y: 300, angle: Math.PI / 5, state: { length: 150 } },
-      { id: "track-left-2", type: "track", x: 350, y: 400, angle: Math.PI / 6, state: { length: 150 } },
-      { id: "track-left-3", type: "track", x: 280, y: 520, angle: Math.PI / 8, state: { length: 150 } },
-      { id: "track-left-4", type: "track", x: 250, y: 620, angle: Math.PI / 10, state: { length: 100 } },
+      { id: "track-left-1", type: "track", x: 550, y: 260, angle: Math.PI / 6, state: { length: 180 } },
+      { id: "track-left-2", type: "track", x: 400, y: 360, angle: Math.PI / 8, state: { length: 180 } },
+      { id: "track-left-3", type: "track", x: 300, y: 480, angle: Math.PI / 10, state: { length: 180 } },
       
       // Right path - leads to blue bin  
-      { id: "track-right-1", type: "track", x: 750, y: 300, angle: -Math.PI / 5, state: { length: 150 } },
-      { id: "track-right-2", type: "track", x: 850, y: 400, angle: -Math.PI / 6, state: { length: 150 } },
-      { id: "track-right-3", type: "track", x: 920, y: 520, angle: -Math.PI / 8, state: { length: 150 } },
-      { id: "track-right-4", type: "track", x: 950, y: 620, angle: -Math.PI / 10, state: { length: 100 } },
+      { id: "track-right-1", type: "track", x: 800, y: 260, angle: -Math.PI / 6, state: { length: 180 } },
+      { id: "track-right-2", type: "track", x: 900, y: 360, angle: -Math.PI / 8, state: { length: 180 } },
+      { id: "track-right-3", type: "track", x: 950, y: 480, angle: -Math.PI / 10, state: { length: 180 } },
       
-      // Center path - diverter toggles to send to yellow
+      // Center path via second diverter
       { id: "diverter-2", type: "diverter", x: 600, y: 350 },
-      { id: "track-center-1", type: "track", x: 550, y: 420, angle: Math.PI / 8, state: { length: 120 } },
-      { id: "track-center-2", type: "track", x: 650, y: 420, angle: -Math.PI / 8, state: { length: 120 } },
-      { id: "track-center-3", type: "track", x: 600, y: 520, angle: 0, state: { length: 150 } },
-      { id: "track-center-4", type: "track", x: 600, y: 620, angle: 0, state: { length: 100 } },
-      
-      // Copper coils for speed boost
-      { id: "coil-1", type: "copperCoils", x: 400, y: 550, angle: Math.PI / 6 },
-      { id: "coil-2", type: "copperCoils", x: 800, y: 550, angle: -Math.PI / 6 },
+      { id: "track-center-1", type: "track", x: 600, y: 450, angle: Math.PI / 20, state: { length: 160 } },
+      { id: "track-center-2", type: "track", x: 600, y: 560, angle: -Math.PI / 20, state: { length: 160 } },
       
       // Exit bins - Red (left), Yellow (center), Blue (right)
-      { id: "exit-red", type: "exitBin", x: 250, y: 700, state: { color: "red" } },
-      { id: "exit-yellow", type: "exitBin", x: 600, y: 700, state: { color: "yellow" } },
-      { id: "exit-blue", type: "exitBin", x: 950, y: 700, state: { color: "blue" } },
+      { id: "exit-red", type: "exitBin", x: 200, y: 650, state: { color: "red" } },
+      { id: "exit-yellow", type: "exitBin", x: 600, y: 650, state: { color: "yellow" } },
+      { id: "exit-blue", type: "exitBin", x: 1000, y: 650, state: { color: "blue" } },
     ],
   },
   {

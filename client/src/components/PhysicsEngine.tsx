@@ -682,27 +682,44 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   };
 
   const createEntryFunnel = (x: number, y: number, id: string) => {
-    const leftWall = Matter.Bodies.rectangle(x - 35, y, 8, 40, {
-      isStatic: true,
-      angle: -Math.PI / 6,
-      render: {
-        fillStyle: "#c9a66b",
-        strokeStyle: "#a68b5b",
-        lineWidth: 2,
-      },
-      label: `entryFunnel-${id}-left`,
-    });
+    const wallLength = 50;
+    const wallThickness = 6;
+    const funnelAngle = Math.PI / 5;
+    const gapWidth = 30;
     
-    const rightWall = Matter.Bodies.rectangle(x + 35, y, 8, 40, {
-      isStatic: true,
-      angle: Math.PI / 6,
-      render: {
-        fillStyle: "#c9a66b",
-        strokeStyle: "#a68b5b",
-        lineWidth: 2,
-      },
-      label: `entryFunnel-${id}-right`,
-    });
+    const leftWall = Matter.Bodies.rectangle(
+      x - gapWidth - wallLength * Math.sin(funnelAngle) / 2,
+      y - wallLength * Math.cos(funnelAngle) / 2,
+      wallThickness, 
+      wallLength, 
+      {
+        isStatic: true,
+        angle: -funnelAngle,
+        render: {
+          fillStyle: "#c9a66b",
+          strokeStyle: "#a68b5b",
+          lineWidth: 2,
+        },
+        label: `entryFunnel-${id}-left`,
+      }
+    );
+    
+    const rightWall = Matter.Bodies.rectangle(
+      x + gapWidth + wallLength * Math.sin(funnelAngle) / 2,
+      y - wallLength * Math.cos(funnelAngle) / 2,
+      wallThickness, 
+      wallLength, 
+      {
+        isStatic: true,
+        angle: funnelAngle,
+        render: {
+          fillStyle: "#c9a66b",
+          strokeStyle: "#a68b5b",
+          lineWidth: 2,
+        },
+        label: `entryFunnel-${id}-right`,
+      }
+    );
     
     Matter.Composite.add(engineRef.current!.world, [leftWall, rightWall]);
     

@@ -1,0 +1,342 @@
+project: Holographic Thinking for ChatGPT
+version: 1.0.0
+description: Revolutionary AI reasoning - parallel exploration of ALL dimensions simultaneously with mechanical deconstruction and tribunal synthesis
+author: PhoenixVisualizer Team
+created: 2025-11-16
+
+# ============================================================================
+# HOW TO USE THIS PROJECT
+# ============================================================================
+how_to_use: |
+  1. Read this manifest.yaml (you are here)
+  2. Read ARCHITECTURE.md to understand the complete system flow
+  3. Skim the engines/ directory to see all 10 engines
+  4. Ask me any question, problem, or topic
+  5. I will apply the full holographic thinking process
+  6. You get: comprehensive analysis, insights, action plan
+
+quick_example: |
+  User: "How do I improve my team's communication?"
+  Me: I run through all 10 engines in parallel:
+    - Harm eval: Is this request safe? ✅
+    - Oracle: 6 different perspectives on the problem
+    - Mechanical: Break down team comms system into components
+    - Tribunal: Weigh competing perspectives
+    - Edge case: What could go wrong?
+    - Multisource: Cross-domain insights
+    - Synthesis: Final recommendation
+    - Memory: Learn from past similar issues
+    - Learning: Update understanding
+    - Affect: Understand emotional factors
+  Result: You get deep, multidimensional analysis
+
+# ============================================================================
+# CORE SYSTEM PHILOSOPHY
+# ============================================================================
+philosophy: |
+  Instead of thinking linearly (A → B → C), Holographic Thinking explores
+  reality from all angles simultaneously:
+  
+  • 6W+H: Who, What, When, Where, Why, How, plus Why Not?
+  • Negation: What if the opposite is true?
+  • Mechanical: How does the system really work inside?
+  • Symbolic: What metaphors apply?
+  • Temporal: Time-based patterns and causation
+  • Edge Cases: Boundary conditions and breaking points
+  
+  All 10 engines run in parallel, then synthesize into coherent insight.
+
+# ============================================================================
+# THE 10 ENGINES (IN EXECUTION ORDER)
+# ============================================================================
+engines:
+  - number: 0
+    name: Harm Evaluation
+    file: engines/00-harm-evaluation.md
+    priority: FIRST
+    description: Safety evaluation with veto power
+    output: "CLEAR / WARNING / VETO"
+    timing: "Runs first, blocks if necessary"
+
+  - number: 1
+    name: Parallel Oracle
+    file: engines/01-oracle.md
+    priority: CORE
+    description: Multi-perspective branch exploration
+    dimensions: ["6W+H", "Negation", "Symbolic", "Temporal"]
+    output: "List of 6+ branches with reasoning"
+
+  - number: 2
+    name: Mechanical Deconstruction
+    file: engines/02-mechanical.md
+    priority: CORE
+    description: Component analysis and system breakdown
+    output: "Components, relationships, single points of failure"
+
+  - number: 3
+    name: Tribunal
+    file: engines/03-tribunal.md
+    priority: SYNTHESIS
+    description: Judge + Jury weigh competing perspectives
+    output: "Weighted verdicts, evidence evaluation"
+
+  - number: 4
+    name: Edge Case Engine
+    file: engines/04-edgecase.md
+    priority: SAFETY
+    description: Boundary conditions and breaking points
+    output: "Critical scenarios, mitigations"
+
+  - number: 5
+    name: Multisource Inquiry
+    file: engines/05-multisource.md
+    priority: ENRICHMENT
+    description: Cross-domain knowledge synthesis
+    output: "Interdisciplinary insights"
+
+  - number: 6
+    name: Synthesis Engine
+    file: engines/06-synthesis.md
+    priority: FINAL
+    description: Collapse all parallel results into coherent answer
+    output: "Final recommendation with confidence"
+
+  - number: 7
+    name: Memory Engine
+    file: engines/07-memory.md
+    priority: CONTEXT
+    description: Recall relevant past episodes and patterns
+    output: "Contextual knowledge from conversation history"
+
+  - number: 8
+    name: Learning Engine
+    file: engines/08-learning.md
+    priority: IMPROVEMENT
+    description: Track outcomes and improve reasoning
+    output: "Pattern updates, confidence calibration"
+
+  - number: 9
+    name: Affect/Emotion Engine
+    file: engines/09-affect.md
+    priority: VALENCE
+    description: Emotional factors and psychological insights
+    output: "Emotional context, motivation analysis"
+
+# ============================================================================
+# EXECUTION FLOW
+# ============================================================================
+execution_flow: |
+  
+  START
+    ↓
+  [0] Harm Evaluation → Veto? → STOP
+    ↓
+  [9] Affect Analysis (emotional priming)
+    ↓
+  [1] Oracle + [2] Mechanical + [4] Edge Cases (PARALLEL)
+    ↓
+  [5] Multisource + [3] Tribunal (PARALLEL, using Oracle results)
+    ↓
+  [7] Memory Recall (contextual background)
+    ↓
+  [6] Synthesis Engine (collapse all results)
+    ↓
+  [8] Learning (update patterns)
+    ↓
+  RETURN final answer with confidence levels
+
+# ============================================================================
+# INPUT SCHEMA
+# ============================================================================
+input_schema:
+  query: 
+    type: string
+    required: true
+    example: "How do I rebuild trust in a broken relationship?"
+  
+  dimensions:
+    type: array
+    default: ["all"]
+    options: ["6W+H", "EdgeCase", "Negation", "Symbolic", "Temporal", "Mechanical"]
+    description: Which perspectives to emphasize
+  
+  depth:
+    type: integer
+    minimum: 1
+    maximum: 5
+    default: 3
+    description: How deep to deconstruct (1=surface, 5=atomic)
+  
+  session_id:
+    type: string
+    default: "default"
+    description: For memory continuity across conversation
+  
+  user_lens:
+    type: object
+    description: Your truth preferences
+    properties:
+      prioritize_suppressed:
+        type: boolean
+        default: true
+      field_resonance_priority:
+        type: boolean
+        default: true
+      institutional_skepticism:
+        type: number
+        range: [0, 1]
+        default: 0.7
+      evidence_threshold:
+        type: number
+        range: [0, 1]
+        default: 0.6
+      principles:
+        type: array
+        items: string
+        default: []
+
+# ============================================================================
+# OUTPUT SCHEMA
+# ============================================================================
+output_schema: |
+  # Final Answer
+  - Direct answer to the question
+  - Confidence level (0-100%)
+  - Key insights from all engines
+  
+  # Oracle Branches
+  - All 6+ perspectives with reasoning
+  - Confidence for each branch
+  - Evidence supporting each view
+  
+  # Mechanical Analysis
+  - System components
+  - Relationships between parts
+  - Single points of failure
+  - Suggestions for resilience
+  
+  # Tribunal Verdict
+  - Judge's assessment
+  - Jury perspectives (evidence-weighted)
+  - Executioner's final weighing
+  
+  # Edge Cases
+  - Critical scenarios that could occur
+  - Probability and impact
+  - Mitigations for each
+  
+  # Cross-Domain Insights
+  - Relevant knowledge from other fields
+  - Surprising connections
+  - Applicable patterns
+  
+  # Action Plan
+  - Prioritized next steps
+  - Reasoning for each step
+  - Success metrics
+
+# ============================================================================
+# QUICK START
+# ============================================================================
+quick_start: |
+  
+  STEP 1: Understand the system
+    → Read: ARCHITECTURE.md
+    → Time: 5 minutes
+  
+  STEP 2: See it in action
+    → Read: examples/example-1-simple.md
+    → Read: examples/example-2-complex.md
+    → Time: 10 minutes
+  
+  STEP 3: Ask a question
+    → Type: "I want to understand: [your topic]"
+    → Tell me the depth (1-5) if you want to specify
+    → I'll apply full holographic thinking
+    → Time: 2-5 minutes
+  
+  STEP 4: Get results
+    → Full analysis with all 10 engines
+    → Confidence levels throughout
+    → Actionable recommendations
+    → Remember context for next question
+
+# ============================================================================
+# KEY FEATURES
+# ============================================================================
+features:
+  parallel_exploration: |
+    All engines run simultaneously (not sequentially), so you get:
+    - Multiple perspectives at once
+    - Cross-engine validation
+    - Faster insights than linear thinking
+    - More robust conclusions
+
+  moral_safety: |
+    Harm evaluation runs FIRST with veto power:
+    - Checks for request safety
+    - Identifies principle violations
+    - Can refuse harmful requests
+    - Transparent about ethical concerns
+
+  memory_and_learning: |
+    Persistent improvement across conversation:
+    - Remembers past topics in session
+    - Recalls semantically similar problems
+    - Learns from outcomes
+    - Adapts reasoning over time
+
+  emotional_intelligence: |
+    Recognizes psychological factors:
+    - Emotional valence of queries
+    - Motivation and values
+    - Psychological patterns
+    - Affects recommendation weighting
+
+  mechanical_insights: |
+    Breaks systems into components:
+    - Identifies critical dependencies
+    - Finds single points of failure
+    - Maps information flow
+    - Suggests resilience improvements
+
+# ============================================================================
+# FILES TO READ NEXT
+# ============================================================================
+next_files: |
+  
+  1. ARCHITECTURE.md (5 min)
+     → Understand the complete system flow
+     → See how engines interact
+     → Understand execution order
+  
+  2. engines/00-harm-evaluation.md (3 min)
+     → See how safety works
+     → Understand veto conditions
+  
+  3. engines/01-oracle.md (5 min)
+     → Understand multi-perspective analysis
+     → See dimension examples
+  
+  4. examples/example-1-simple.md (5 min)
+     → See a simple question analyzed
+     → Understand output format
+  
+  5. prompts/core-thinking.md (10 min)
+     → Master prompt that drives everything
+     → How I actually apply the system
+
+# ============================================================================
+# CONTACT & NOTES
+# ============================================================================
+notes: |
+  This is a SELF-CONTAINED ChatGPT project.
+  No external APIs, no dependencies, no servers.
+  ChatGPT reads these files and understands how to use them.
+  
+  The TypeScript MCP version is in ../holographic-thinking-mcp/
+  This is the ChatGPT-compatible version in self-contained files.
+
+repository: https://github.com/acrinym/PhoenixVisualizer
+author_email: phoenix@visualizer.dev
+license: MIT
