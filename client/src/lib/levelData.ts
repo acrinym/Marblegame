@@ -31,34 +31,27 @@ export const BUILT_IN_LEVELS: LevelData[] = [
     targetScore: 5000,
     leonardoNote: "Every journey begins with a single marble. Master the fundamentals before reaching for the stars.",
     contraptions: [
-      // Entry funnel at center top - marble drops through gap at bottom
+      // Entry funnel at center top
       { id: "funnel-1", type: "entryFunnel", x: 600, y: 80 },
 
-      // Catch track directly below funnel - slight angle to roll marble right
-      { id: "track-catch", type: "track", x: 600, y: 140, angle: Math.PI / 12, state: { length: 200 } },
+      // Main diverter right below funnel - marble lands on angled surface and rolls
+      { id: "diverter-1", type: "diverter", x: 600, y: 160 },
       
-      // Main diverter - toggles path
-      { id: "diverter-1", type: "diverter", x: 700, y: 200 },
+      // Left path from diverter - staggered tracks leading to red bin
+      { id: "track-left-1", type: "track", x: 480, y: 240, angle: Math.PI / 6, state: { length: 160 } },
+      { id: "track-left-2", type: "track", x: 350, y: 340, angle: Math.PI / 7, state: { length: 160 } },
+      { id: "track-left-3", type: "track", x: 250, y: 450, angle: Math.PI / 8, state: { length: 160 } },
+      { id: "track-left-4", type: "track", x: 180, y: 560, angle: Math.PI / 10, state: { length: 140 } },
       
-      // Left path - leads to red bin
-      { id: "track-left-1", type: "track", x: 550, y: 260, angle: Math.PI / 6, state: { length: 180 } },
-      { id: "track-left-2", type: "track", x: 400, y: 360, angle: Math.PI / 8, state: { length: 180 } },
-      { id: "track-left-3", type: "track", x: 300, y: 480, angle: Math.PI / 10, state: { length: 180 } },
+      // Right path from diverter - staggered tracks leading to blue bin
+      { id: "track-right-1", type: "track", x: 720, y: 240, angle: -Math.PI / 6, state: { length: 160 } },
+      { id: "track-right-2", type: "track", x: 850, y: 340, angle: -Math.PI / 7, state: { length: 160 } },
+      { id: "track-right-3", type: "track", x: 950, y: 450, angle: -Math.PI / 8, state: { length: 160 } },
+      { id: "track-right-4", type: "track", x: 1020, y: 560, angle: -Math.PI / 10, state: { length: 140 } },
       
-      // Right path - leads to blue bin  
-      { id: "track-right-1", type: "track", x: 800, y: 260, angle: -Math.PI / 6, state: { length: 180 } },
-      { id: "track-right-2", type: "track", x: 900, y: 360, angle: -Math.PI / 8, state: { length: 180 } },
-      { id: "track-right-3", type: "track", x: 950, y: 480, angle: -Math.PI / 10, state: { length: 180 } },
-      
-      // Center path via second diverter
-      { id: "diverter-2", type: "diverter", x: 600, y: 350 },
-      { id: "track-center-1", type: "track", x: 600, y: 450, angle: Math.PI / 20, state: { length: 160 } },
-      { id: "track-center-2", type: "track", x: 600, y: 560, angle: -Math.PI / 20, state: { length: 160 } },
-      
-      // Exit bins - Red (left), Yellow (center), Blue (right)
-      { id: "exit-red", type: "exitBin", x: 200, y: 650, state: { color: "red" } },
-      { id: "exit-yellow", type: "exitBin", x: 600, y: 650, state: { color: "yellow" } },
-      { id: "exit-blue", type: "exitBin", x: 1000, y: 650, state: { color: "blue" } },
+      // Exit bins - Red (left), Blue (right)
+      { id: "exit-red", type: "exitBin", x: 150, y: 680, state: { color: "red" } },
+      { id: "exit-blue", type: "exitBin", x: 1050, y: 680, state: { color: "blue" } },
     ],
   },
   {
