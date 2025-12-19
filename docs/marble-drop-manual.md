@@ -119,6 +119,17 @@ If you find you must "sacrifice" a marble to trip a switch, change a diverter, b
 | Black Marbles | 1500 pts |
 | Steel Marbles | 100 pts |
 
+## Track Variants
+
+These are not really components, but several different track styles that make the puzzles more interesting:
+
+- **Spirals** - Curved descending tracks
+- **Corkscrews** - Helical tracks that twist as they descend
+- **Gutter-style tracks** - Open channel tracks
+- **Pipes** - Enclosed tracks where marble is hidden
+- **Jumps** - Gaps where marbles must jump across
+- **Drops** - Vertical falls
+
 ## Contraptions Not Yet Implemented
 - Pendulum
 - Timer
