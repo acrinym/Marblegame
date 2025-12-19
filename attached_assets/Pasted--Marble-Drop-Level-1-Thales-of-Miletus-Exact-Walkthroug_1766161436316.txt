@@ -1,0 +1,75 @@
+# Marble Drop Level 1: "Thales of Miletus" - Exact Walkthrough
+
+## Level Overview
+**Name:** Thales of Miletus (Level 1)  
+**Theme:** Renaissance-era machinery with Da Vinci-style sketches  
+**Visual Design:** The contraption appears as a hand-drawn engineering blueprint with brass and wood components, annotated with Leonardo's notes explaining each gadget's function.
+
+## Starting Conditions
+You begin with **12 marbles** in your inventory: 4 Red (R), 4 Yellow (Y), and 4 Blue (B). The level features **two entry funnels (baskets)** at the top, numbered left to right as **Basket 1** and **Basket 2**. At the bottom are color-matched exit bins for each marble color.
+
+## Exact Solution Sequence
+To achieve perfect efficiency (Score: 11,590), drop marbles in this precise order:
+
+| Drop # | Basket | Marble Color | Wait for completion? |
+|--------|--------|--------------|---------------------|
+| 1 | **1** (Left) | **Yellow** | Yes |
+| 2 | **1** (Left) | **Red** | Yes |
+| 3 | **1** (Left) | **Red** | Yes |
+| 4 | **1** (Left) | **Red** | Yes |
+| 5 | **1** (Left) | **Yellow** | Yes |
+| 6 | **1** (Left) | **Red** | Yes |
+| 7 | **2** (Right) | **Yellow** | Yes |
+| 8 | **2** (Right) | **Blue** | Yes |
+| 9 | **2** (Right) | **Blue** | Yes |
+| 10 | **2** (Right) | **Blue** | Yes |
+| 11 | **2** (Right) | **Yellow** | Yes |
+| 12 | **2** (Right) | **Blue** | Yes |
+
+**Critical Rule:** After each drop, **wait for the marble to completely finish its journey** (all movement and triggered effects cease) before dropping the next marble. No timing tricks are needed for this level.
+
+## What Each Marble Does (Mechanical Breakdown)
+
+### Basket 1 Path (First 6 marbles)
+When you drop marbles into the **left funnel**, they travel through:
+1. **Initial spiral chute** - slows the marble and deposits it onto a main rail
+2. **Toggle switches** - Each marble hits a pressure plate that flips a diverter gate
+3. **Color-specific routing** - The path branches based on the marble's color and the current state of the gates
+4. **Final approach** - Marbles are directed toward their matching bins (Red→Red Bin, Yellow→Yellow Bin)
+
+**Specific behavior:**
+- The **first Yellow** activates the primary pathway and sets the initial gate position
+- The **three Reds** in sequence clear obstacles and tune the path for subsequent marbles
+- The **second Yellow** verifies the path configuration
+- The **final Red** completes the path setup for Basket 1
+
+### Basket 2 Path (Last 6 marbles)
+When you drop marbles into the **right funnel**, they encounter:
+1. **Crossbow launcher** - Shoots the marble across to a separate rail network
+2. **Button triggers** - Each marble depresses a button that temporarily opens/closes pathways
+3. **Shared junction** - This path briefly intersects with Basket 1's path, requiring careful sequencing
+4. **Color sorting** - The final diverters route Blue marbles to Blue Bin and Yellow to Yellow Bin
+
+**Specific behavior:**
+- The **Yellow** drop (#7) activates the Basket 2 mechanism and synchronizes it with Basket 1's state
+- The **three Blues** (drops #8-10) each hit reset switches that prevent path conflicts
+- The **final Yellow** (#11) triggers a release mechanism
+- The **last Blue** (#12) travels the fully-cleared path to its destination
+
+## Goal Completion
+When all 12 marbles reach their **correctly colored bins**:
+- All Red marbles land in the **Red Bin**
+- All Yellow marbles land in the **Yellow Bin**
+- All Blue marbles land in the **Blue Bin**
+- **0 marbles are destroyed** in the optimal solution
+- All 12 marbles are **returned to your inventory** for the next level
+- You earn **11,590 points** (perfect efficiency score)
+
+## Key Mechanics Demonstrated
+This tutorial level teaches:
+- **Path visualization:** Marbles physically alter the contraption as they travel
+- **State changes:** Each marble flips switches that affect the next marble's route
+- **Color matching:** Only correct-color marbles survive; wrong paths lead to destruction
+- **Conservation:** No marbles are wasted in the optimal solution, though later levels require sacrificing marbles to trigger mechanisms
+
+**Note:** If you deviate from this sequence, marbles will be destroyed by falling into wrong-color bins, getting stuck in glue traps, or entering infinite loops. You can purchase replacement marbles using points, but this reduces your efficiency score.

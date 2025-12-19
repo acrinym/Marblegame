@@ -124,7 +124,9 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   const heatersRef = useRef<Map<string, HeaterState>>(new Map());
   const freezersRef = useRef<Map<string, FreezerState>>(new Map());
   const marbleColorsRef = useRef<Map<string, MarbleColor>>(new Map());
+  const entryFunnelsRef = useRef<Array<{ id: string; x: number; y: number }>>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [currentFunnelIndex, setCurrentFunnelIndex] = useState(0);
   
   const { setCanDropMarble, removeMarble } = useMarbleDrop();
 
@@ -188,6 +190,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
       blockersRef.current.clear();
       heatersRef.current.clear();
       freezersRef.current.clear();
+      entryFunnelsRef.current = [];
+      exitBinsRef.current.clear();
 
       contraptions.forEach((config) => {
         const { id, type, x, y, angle = 0, state = {} } = config;
@@ -273,6 +277,31 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
             const freezer = createFreezer(world, x, y, id, state?.width || 60, state?.slowFactor || 0.5);
             freezersRef.current.set(id, freezer);
             break;
+          case "track":
+            const trackLength = state?.length || 100;
+            const trackBody = Matter.Bodies.rectangle(x, y, trackLength, 8, {
+              isStatic: true,
+              angle: angle,
+              render: { 
+                fillStyle: state?.color || "#d4a574", 
+                strokeStyle: "#b8935f", 
+                lineWidth: 2 
+              },
+              label: `track-${id}`,
+            });
+            Matter.Composite.add(world, trackBody);
+            break;
+          case "entryFunnel":
+            const funnelBody = createEntryFunnel(x, y, id);
+            Matter.Composite.add(world, funnelBody);
+            entryFunnelsRef.current.push({ id, x, y });
+            break;
+          case "exitBin":
+            const binColor = state?.color || "red";
+            const binBody = createSingleExitBin(x, y, id, binColor as MarbleColor);
+            exitBinsRef.current.set(id, { body: binBody, color: binColor as MarbleColor });
+            Matter.Composite.add(world, binBody);
+            break;
           default:
             console.warn(`Unknown contraption type: ${type}`);
         }
@@ -303,13 +332,22 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         label: "rightWall",
       });
 
-      const vortexFunnel = createVortexFunnel(600, 100);
-      const curvedTrack = createCurvedTrack(600, 250);
-      const exitBins = createExitBins(w, h);
-
-      Matter.Composite.add(world, [ground, leftWall, rightWall, vortexFunnel, ...curvedTrack, ...exitBins]);
+      Matter.Composite.add(world, [ground, leftWall, rightWall]);
 
       if (contraptions && contraptions.length > 0) {
+        const hasEntryFunnels = contraptions.some(c => c.type === "entryFunnel");
+        const hasExitBins = contraptions.some(c => c.type === "exitBin");
+        
+        if (!hasEntryFunnels) {
+          const vortexFunnel = createVortexFunnel(600, 100);
+          Matter.Composite.add(world, vortexFunnel);
+        }
+        
+        if (!hasExitBins) {
+          const exitBins = createExitBins(w, h);
+          Matter.Composite.add(world, exitBins);
+        }
+        
         loadContraptionsFromConfig(world, contraptions);
       } else {
         const diverter1 = createDiverter(world, 450, 400, "diverter-1", "left");
@@ -350,9 +388,14 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
 
         const qPipe2 = createQuarterPipe(world, 900, 350, "qpipe-2", "sw", 60);
         curvedTracksRef.current.set("qpipe-2", qPipe2);
+        
+        const vortexFunnel = createVortexFunnel(600, 100);
+        const curvedTrack = createCurvedTrack(600, 250);
+        const exitBins = createExitBins(w, h);
+        Matter.Composite.add(world, [vortexFunnel, ...curvedTrack, ...exitBins]);
+        
+        createGuideRails(world);
       }
-
-      createGuideRails(world);
     };
 
     initWorld(engine.world, levelContraptions);
@@ -624,6 +667,54 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     return funnel;
   };
 
+  const createEntryFunnel = (x: number, y: number, id: string) => {
+    const leftWall = Matter.Bodies.rectangle(x - 30, y + 20, 8, 50, {
+      isStatic: true,
+      angle: -Math.PI / 8,
+      render: {
+        fillStyle: "#d4a574",
+        strokeStyle: "#b8935f",
+        lineWidth: 2,
+      },
+      label: `entryFunnel-${id}-left`,
+    });
+    
+    const rightWall = Matter.Bodies.rectangle(x + 30, y + 20, 8, 50, {
+      isStatic: true,
+      angle: Math.PI / 8,
+      render: {
+        fillStyle: "#d4a574",
+        strokeStyle: "#b8935f",
+        lineWidth: 2,
+      },
+      label: `entryFunnel-${id}-right`,
+    });
+    
+    return Matter.Body.create({
+      parts: [leftWall, rightWall],
+      isStatic: true,
+    });
+  };
+
+  const createSingleExitBin = (x: number, y: number, id: string, color: MarbleColor) => {
+    const binWidth = 70;
+    const binHeight = 50;
+    
+    const bin = Matter.Bodies.rectangle(x, y, binWidth, binHeight, {
+      isStatic: true,
+      isSensor: true,
+      render: {
+        fillStyle: MARBLE_COLORS[color],
+        opacity: 0.6,
+        strokeStyle: MARBLE_COLORS[color],
+        lineWidth: 3,
+      },
+      label: `exitBin-${color}`,
+    });
+    
+    return bin;
+  };
+
   const createCurvedTrack = (startX: number, startY: number) => {
     const segments: Matter.Body[] = [];
     const numSegments = 10;
@@ -693,14 +784,23 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     return bins;
   };
 
-  const dropMarbleInternal = (color: MarbleColor, marbleId: string) => {
+  const dropMarbleInternal = (color: MarbleColor, marbleId: string, funnelIndex: number = 0) => {
     if (!engineRef.current) {
       console.error("Engine not initialized");
       return;
     }
 
+    let dropX = 600;
+    let dropY = 160;
+    
+    if (entryFunnelsRef.current.length > 0) {
+      const funnel = entryFunnelsRef.current[funnelIndex % entryFunnelsRef.current.length];
+      dropX = funnel.x;
+      dropY = funnel.y + 50;
+    }
+
     const props = MARBLE_PROPERTIES[color];
-    const marble = Matter.Bodies.circle(600, 160, props.radius, {
+    const marble = Matter.Bodies.circle(dropX, dropY, props.radius, {
       restitution: props.restitution,
       friction: props.friction,
       density: props.density,
@@ -717,7 +817,7 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     Matter.Composite.add(engineRef.current.world, marble);
     marbleBodiesRef.current.set(marbleId, { body: marble, color, timestamp: Date.now() });
     
-    console.log(`Dropped ${color} marble (density: ${props.density}) into physics world at position (600, 160)`);
+    console.log(`Dropped ${color} marble at funnel ${funnelIndex} position (${dropX}, ${dropY})`);
   };
 
   useEffect(() => {
