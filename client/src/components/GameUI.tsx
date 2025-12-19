@@ -1,7 +1,12 @@
 import { useMarbleDrop } from "@/lib/stores/useMarbleDrop";
 import { MarbleInventory } from "./MarbleInventory";
 
-export const GameUI = () => {
+interface GameUIProps {
+  onOpenLevelSelector?: () => void;
+  currentLevelName?: string;
+}
+
+export const GameUI = ({ onOpenLevelSelector, currentLevelName }: GameUIProps = {}) => {
   const { score, selectedColor, canDropMarble, gameMode, resetGame } = useMarbleDrop();
 
   return (
@@ -47,17 +52,22 @@ export const GameUI = () => {
             )}
           </div>
 
-          <div className="flex gap-2 justify-center text-sm text-gray-300">
+          <div className="flex gap-2 justify-center text-sm text-gray-300 flex-wrap">
             <div className="bg-gray-700 px-3 py-1 rounded">
-              <kbd className="font-mono">E</kbd> Editor Mode
+              <kbd className="font-mono">E</kbd> Editor
             </div>
             <div className="bg-gray-700 px-3 py-1 rounded">
-              <kbd className="font-mono">G</kbd> Play Mode
+              <kbd className="font-mono">L</kbd> Levels
             </div>
             <div className="bg-gray-700 px-3 py-1 rounded">
               <kbd className="font-mono">R</kbd> Reset
             </div>
           </div>
+          {currentLevelName && (
+            <div className="text-center mt-2 text-cyan-400 text-sm">
+              Playing: {currentLevelName}
+            </div>
+          )}
         </div>
       </div>
 

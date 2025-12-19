@@ -14,6 +14,12 @@ import {
   createTriggeredDiverter,
   triggerDiverter,
   type TriggeredDiverterState,
+  createSpinner,
+  applySpinnerForce,
+  type SpinnerState,
+  createPainter,
+  paintMarble,
+  type PainterState,
 } from "./contraptions";
 
 const MARBLE_COLORS: Record<MarbleColor, string> = {
@@ -44,12 +50,22 @@ export interface PhysicsEngineRef {
   removeBody: (body: Matter.Body) => void;
 }
 
+export interface ContraptionConfig {
+  id: string;
+  type: string;
+  x: number;
+  y: number;
+  angle?: number;
+  state?: Record<string, any>;
+}
+
 interface Props {
   onMarbleReachExit?: (marbleId: string, color: MarbleColor, exitColor: MarbleColor) => void;
   onMarbleLost?: (marbleId: string, color: MarbleColor) => void;
+  levelContraptions?: ContraptionConfig[];
 }
 
-export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost }: Props) => {
+export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptions }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
@@ -60,6 +76,9 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost }: Props) => {
   const copperCoilsRef = useRef<Map<string, CopperCoilState>>(new Map());
   const waterJetsRef = useRef<Map<string, WaterJetState>>(new Map());
   const triggeredDivertersRef = useRef<Map<string, TriggeredDiverterState>>(new Map());
+  const spinnersRef = useRef<Map<string, SpinnerState>>(new Map());
+  const paintersRef = useRef<Map<string, PainterState>>(new Map());
+  const marbleColorsRef = useRef<Map<string, MarbleColor>>(new Map());
   const [isInitialized, setIsInitialized] = useState(false);
   
   const { setCanDropMarble, removeMarble } = useMarbleDrop();
@@ -106,7 +125,116 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost }: Props) => {
     runnerRef.current = runner;
     Matter.Runner.run(runner, engine);
 
-    createWorld(engine.world);
+    const loadContraptionsFromConfig = (world: Matter.World, contraptions: ContraptionConfig[]) => {
+      divertersRef.current.clear();
+      copperCoilsRef.current.clear();
+      waterJetsRef.current.clear();
+      triggeredDivertersRef.current.clear();
+      spinnersRef.current.clear();
+      paintersRef.current.clear();
+
+      contraptions.forEach((config) => {
+        const { id, type, x, y, angle = 0, state = {} } = config;
+        
+        switch (type) {
+          case "diverter":
+            const diverter = createDiverter(world, x, y, id, "left");
+            divertersRef.current.set(id, diverter);
+            break;
+          case "copperCoils":
+            const coil = createCopperEnergyCoils(world, x, y, id, angle);
+            copperCoilsRef.current.set(id, coil);
+            break;
+          case "waterJet":
+            const jet = createWaterJetPropulsor(world, x, y, id, angle, 0.006);
+            waterJetsRef.current.set(id, jet);
+            break;
+          case "spinner":
+            const spinner = createSpinner(world, x, y, id, 0.08);
+            spinnersRef.current.set(id, spinner);
+            break;
+          case "triggeredDiverter":
+            const trigX = x - 100;
+            const trigY = y - 100;
+            const triggered = createTriggeredDiverter(world, x, y, trigX, trigY, id, "left");
+            triggeredDivertersRef.current.set(id, triggered);
+            break;
+          case "painter":
+            const targetColor = state?.targetColor || "blue";
+            const painter = createPainter(world, x, y, id, targetColor as MarbleColor);
+            paintersRef.current.set(id, painter);
+            break;
+          default:
+            console.warn(`Unknown contraption type: ${type}`);
+        }
+      });
+      
+      console.log(`Loaded ${contraptions.length} contraptions from config`);
+    };
+
+    const initWorld = (world: Matter.World, contraptions?: ContraptionConfig[]) => {
+      const w = 1200;
+      const h = 800;
+
+      const ground = Matter.Bodies.rectangle(w / 2, h - 10, w, 20, {
+        isStatic: true,
+        render: { fillStyle: "#2a2a3e" },
+        label: "ground",
+      });
+
+      const leftWall = Matter.Bodies.rectangle(10, h / 2, 20, h, {
+        isStatic: true,
+        render: { fillStyle: "#2a2a3e" },
+        label: "leftWall",
+      });
+
+      const rightWall = Matter.Bodies.rectangle(w - 10, h / 2, 20, h, {
+        isStatic: true,
+        render: { fillStyle: "#2a2a3e" },
+        label: "rightWall",
+      });
+
+      const vortexFunnel = createVortexFunnel(600, 100);
+      const curvedTrack = createCurvedTrack(600, 250);
+      const exitBins = createExitBins(w, h);
+
+      Matter.Composite.add(world, [ground, leftWall, rightWall, vortexFunnel, ...curvedTrack, ...exitBins]);
+
+      if (contraptions && contraptions.length > 0) {
+        loadContraptionsFromConfig(world, contraptions);
+      } else {
+        const diverter1 = createDiverter(world, 450, 400, "diverter-1", "left");
+        divertersRef.current.set("diverter-1", diverter1);
+
+        const diverter2 = createDiverter(world, 750, 400, "diverter-2", "right");
+        divertersRef.current.set("diverter-2", diverter2);
+
+        const coil1 = createCopperEnergyCoils(world, 350, 500, "coil-1", Math.PI / 8);
+        copperCoilsRef.current.set("coil-1", coil1);
+
+        const coil2 = createCopperEnergyCoils(world, 850, 500, "coil-2", -Math.PI / 8);
+        copperCoilsRef.current.set("coil-2", coil2);
+
+        const waterJet1 = createWaterJetPropulsor(world, 250, 550, "jet-1", -Math.PI / 4, 0.006);
+        waterJetsRef.current.set("jet-1", waterJet1);
+
+        const waterJet2 = createWaterJetPropulsor(world, 950, 550, "jet-2", -3 * Math.PI / 4, 0.006);
+        waterJetsRef.current.set("jet-2", waterJet2);
+
+        const triggeredDiverter1 = createTriggeredDiverter(world, 600, 450, 500, 350, "triggered-1", "left");
+        triggeredDivertersRef.current.set("triggered-1", triggeredDiverter1);
+
+        const spinner1 = createSpinner(world, 200, 450, "spinner-1", 0.08);
+        spinnersRef.current.set("spinner-1", spinner1);
+
+        const painter1 = createPainter(world, 1000, 400, "painter-1", "blue");
+        paintersRef.current.set("painter-1", painter1);
+      }
+
+      createGuideRails(world);
+    };
+
+    initWorld(engine.world, levelContraptions);
 
     setIsInitialized(true);
 
@@ -164,6 +292,23 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost }: Props) => {
               triggeredDivertersRef.current.set(tDiverterId, newState);
             }
           });
+
+          spinnersRef.current.forEach((spinner, spinnerId) => {
+            if (spinner.sensorBody && (bodyA === marbleBody && bodyB === spinner.sensorBody || bodyB === marbleBody && bodyA === spinner.sensorBody)) {
+              applySpinnerForce(marbleBody, spinner);
+            }
+          });
+
+          paintersRef.current.forEach((painter, painterId) => {
+            if (painter.sensorBody && (bodyA === marbleBody && bodyB === painter.sensorBody || bodyB === marbleBody && bodyA === painter.sensorBody)) {
+              paintMarble(marbleBody, painter, (marbleLabel, newColor) => {
+                const marbleEntry = marbleBodiesRef.current.get(marbleId);
+                if (marbleEntry) {
+                  marbleBodiesRef.current.set(marbleId, { ...marbleEntry, color: newColor });
+                }
+              });
+            }
+          });
         });
       });
     };
@@ -210,61 +355,7 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost }: Props) => {
       Matter.Engine.clear(engine);
       render.canvas.remove();
     };
-  }, [onMarbleReachExit, onMarbleLost, removeMarble, setCanDropMarble]);
-
-  const createWorld = (world: Matter.World) => {
-    const width = 1200;
-    const height = 800;
-
-    const ground = Matter.Bodies.rectangle(width / 2, height - 10, width, 20, {
-      isStatic: true,
-      render: { fillStyle: "#2a2a3e" },
-      label: "ground",
-    });
-
-    const leftWall = Matter.Bodies.rectangle(10, height / 2, 20, height, {
-      isStatic: true,
-      render: { fillStyle: "#2a2a3e" },
-      label: "leftWall",
-    });
-
-    const rightWall = Matter.Bodies.rectangle(width - 10, height / 2, 20, height, {
-      isStatic: true,
-      render: { fillStyle: "#2a2a3e" },
-      label: "rightWall",
-    });
-
-    const vortexFunnel = createVortexFunnel(600, 100);
-    
-    const curvedTrack = createCurvedTrack(600, 250);
-    
-    const exitBins = createExitBins(width, height);
-
-    Matter.Composite.add(world, [ground, leftWall, rightWall, vortexFunnel, ...curvedTrack, ...exitBins]);
-
-    const diverter1 = createDiverter(world, 450, 400, "diverter-1", "left");
-    divertersRef.current.set("diverter-1", diverter1);
-
-    const diverter2 = createDiverter(world, 750, 400, "diverter-2", "right");
-    divertersRef.current.set("diverter-2", diverter2);
-
-    const coil1 = createCopperEnergyCoils(world, 350, 500, "coil-1", Math.PI / 8);
-    copperCoilsRef.current.set("coil-1", coil1);
-
-    const coil2 = createCopperEnergyCoils(world, 850, 500, "coil-2", -Math.PI / 8);
-    copperCoilsRef.current.set("coil-2", coil2);
-
-    const waterJet1 = createWaterJetPropulsor(world, 250, 550, "jet-1", -Math.PI / 4, 0.006);
-    waterJetsRef.current.set("jet-1", waterJet1);
-
-    const waterJet2 = createWaterJetPropulsor(world, 950, 550, "jet-2", -3 * Math.PI / 4, 0.006);
-    waterJetsRef.current.set("jet-2", waterJet2);
-
-    const triggeredDiverter1 = createTriggeredDiverter(world, 600, 450, 500, 350, "triggered-1", "left");
-    triggeredDivertersRef.current.set("triggered-1", triggeredDiverter1);
-
-    createGuideRails(world);
-  };
+  }, [onMarbleReachExit, onMarbleLost, removeMarble, setCanDropMarble, levelContraptions]);
 
   const createGuideRails = (world: Matter.World) => {
     const rail1 = Matter.Bodies.rectangle(350, 450, 100, 8, {
