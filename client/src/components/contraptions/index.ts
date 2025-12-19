@@ -6,6 +6,13 @@ export * from "./TriggeredDiverter";
 export * from "./Painter";
 export * from "./CornerCatcher";
 export * from "./CurvedTrack";
+export * from "./Lift";
+export * from "./Brake";
+export * from "./Teleporter";
+export * from "./Spring";
+export * from "./Cannon";
+export * from "./Destructor";
+export * from "./Blocker";
 
 export type ContraptionType = 
   | "diverter"
@@ -18,6 +25,13 @@ export type ContraptionType =
   | "curvedTrack"
   | "quarterPipe"
   | "halfPipe"
+  | "lift"
+  | "brake"
+  | "teleporter"
+  | "spring"
+  | "cannon"
+  | "destructor"
+  | "blocker"
   | "vortexFunnel"
   | "exitBin";
 

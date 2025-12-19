@@ -32,6 +32,13 @@ const CONTRAPTION_PALETTE = [
   { type: "cornerCatcher" as ContraptionType, name: "Corner Catcher", description: "Catches & redirects marbles", color: "#48bb78" },
   { type: "quarterPipe" as ContraptionType, name: "Quarter Pipe", description: "90-degree curved track", color: "#8b5a2b" },
   { type: "halfPipe" as ContraptionType, name: "Half Pipe", description: "180-degree curved track", color: "#a0522d" },
+  { type: "lift" as ContraptionType, name: "Lift", description: "Moves marble up", color: "#6b7280" },
+  { type: "brake" as ContraptionType, name: "Brake", description: "Slows marble down", color: "#dc2626" },
+  { type: "teleporter" as ContraptionType, name: "Teleporter", description: "Instant transport", color: "#8b5cf6" },
+  { type: "spring" as ContraptionType, name: "Spring", description: "Bounces marble", color: "#22c55e" },
+  { type: "cannon" as ContraptionType, name: "Cannon", description: "Launches marble", color: "#374151" },
+  { type: "destructor" as ContraptionType, name: "Destructor", description: "Destroys marble (hazard)", color: "#7c3aed" },
+  { type: "blocker" as ContraptionType, name: "Blocker", description: "Blocks path", color: "#ef4444" },
 ];
 
 const PAINTER_COLORS: MarbleColor[] = ["red", "orange", "yellow", "green", "blue", "purple"];

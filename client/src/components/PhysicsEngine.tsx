@@ -26,6 +26,28 @@ import {
   createQuarterPipe,
   createHalfPipe,
   type CurvedTrack as CurvedTrackState,
+  createLift,
+  activateLift,
+  updateLift,
+  type LiftState,
+  createBrake,
+  applyBrake,
+  type BrakeState,
+  createTeleporter,
+  teleportMarble,
+  type TeleporterState,
+  createSpring as createSpringContraption,
+  applySpringBounce,
+  type SpringState,
+  createCannon,
+  loadCannon,
+  fireCannon,
+  type CannonState,
+  createDestructor,
+  destroyMarble,
+  type DestructorState,
+  createBlocker,
+  type BlockerState,
 } from "./contraptions";
 
 const MARBLE_COLORS: Record<MarbleColor, string> = {
@@ -86,6 +108,13 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   const paintersRef = useRef<Map<string, PainterState>>(new Map());
   const cornerCatchersRef = useRef<Map<string, CornerCatcher>>(new Map());
   const curvedTracksRef = useRef<Map<string, CurvedTrackState>>(new Map());
+  const liftsRef = useRef<Map<string, LiftState>>(new Map());
+  const brakesRef = useRef<Map<string, BrakeState>>(new Map());
+  const teleportersRef = useRef<Map<string, TeleporterState>>(new Map());
+  const springsRef = useRef<Map<string, SpringState>>(new Map());
+  const cannonsRef = useRef<Map<string, CannonState>>(new Map());
+  const destructorsRef = useRef<Map<string, DestructorState>>(new Map());
+  const blockersRef = useRef<Map<string, BlockerState>>(new Map());
   const marbleColorsRef = useRef<Map<string, MarbleColor>>(new Map());
   const [isInitialized, setIsInitialized] = useState(false);
   
@@ -142,6 +171,13 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
       paintersRef.current.clear();
       cornerCatchersRef.current.clear();
       curvedTracksRef.current.clear();
+      liftsRef.current.clear();
+      brakesRef.current.clear();
+      teleportersRef.current.clear();
+      springsRef.current.clear();
+      cannonsRef.current.clear();
+      destructorsRef.current.clear();
+      blockersRef.current.clear();
 
       contraptions.forEach((config) => {
         const { id, type, x, y, angle = 0, state = {} } = config;
@@ -188,6 +224,36 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
             const halfDir = state?.orientation || "bottom";
             const hPipe = createHalfPipe(world, x, y, id, halfDir, state?.radius || 60);
             curvedTracksRef.current.set(id, hPipe);
+            break;
+          case "lift":
+            const lift = createLift(world, x, y, id, state?.height || 200);
+            liftsRef.current.set(id, lift);
+            break;
+          case "brake":
+            const brake = createBrake(world, x, y, id, state?.width || 80, angle);
+            brakesRef.current.set(id, brake);
+            break;
+          case "teleporter":
+            const exitX = state?.exitX || x + 200;
+            const exitY = state?.exitY || y;
+            const teleporter = createTeleporter(world, x, y, exitX, exitY, id);
+            teleportersRef.current.set(id, teleporter);
+            break;
+          case "spring":
+            const springC = createSpringContraption(world, x, y, id, angle, state?.bounceForce || 0.025);
+            springsRef.current.set(id, springC);
+            break;
+          case "cannon":
+            const cannon = createCannon(world, x, y, id, angle, state?.launchForce || 0.04);
+            cannonsRef.current.set(id, cannon);
+            break;
+          case "destructor":
+            const destructor = createDestructor(world, x, y, id, state?.radius || 40);
+            destructorsRef.current.set(id, destructor);
+            break;
+          case "blocker":
+            const blocker = createBlocker(world, x, y, id, state?.width || 60, state?.height || 20, angle);
+            blockersRef.current.set(id, blocker);
             break;
           default:
             console.warn(`Unknown contraption type: ${type}`);
@@ -353,11 +419,85 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
               console.log(`Marble caught and redirected by corner catcher ${catcherId}`);
             }
           });
+
+          liftsRef.current.forEach((lift, liftId) => {
+            if (lift.sensorBody && (bodyA === marbleBody && bodyB === lift.sensorBody || bodyB === marbleBody && bodyA === lift.sensorBody)) {
+              const newState = activateLift(lift);
+              liftsRef.current.set(liftId, newState);
+              console.log(`Marble activated lift ${liftId}`);
+            }
+          });
+
+          brakesRef.current.forEach((brake, brakeId) => {
+            if (brake.sensorBody && (bodyA === marbleBody && bodyB === brake.sensorBody || bodyB === marbleBody && bodyA === brake.sensorBody)) {
+              applyBrake(marbleBody, brake);
+              console.log(`Marble slowed by brake ${brakeId}`);
+            }
+          });
+
+          teleportersRef.current.forEach((teleporter, teleporterId) => {
+            if (teleporter.entrySensor && (bodyA === marbleBody && bodyB === teleporter.entrySensor || bodyB === marbleBody && bodyA === teleporter.entrySensor)) {
+              const newState = teleportMarble(marbleBody, teleporter);
+              teleportersRef.current.set(teleporterId, newState);
+            }
+          });
+
+          springsRef.current.forEach((spring, springId) => {
+            if (spring.sensorBody && (bodyA === marbleBody && bodyB === spring.sensorBody || bodyB === marbleBody && bodyA === spring.sensorBody)) {
+              applySpringBounce(marbleBody, spring);
+            }
+          });
+
+          cannonsRef.current.forEach((cannon, cannonId) => {
+            if (cannon.sensorBody && (bodyA === marbleBody && bodyB === cannon.sensorBody || bodyB === marbleBody && bodyA === cannon.sensorBody)) {
+              let newState = loadCannon(cannon);
+              newState = fireCannon(marbleBody, newState);
+              cannonsRef.current.set(cannonId, newState);
+            }
+          });
+
+          destructorsRef.current.forEach((destructor, destructorId) => {
+            if (destructor.sensorBody && (bodyA === marbleBody && bodyB === destructor.sensorBody || bodyB === marbleBody && bodyA === destructor.sensorBody)) {
+              if (engineRef.current) {
+                destroyMarble(marbleBody, destructor, engineRef.current.world, (label) => {
+                  marbleBodiesRef.current.delete(marbleId);
+                  removeMarble(marbleId);
+                  setCanDropMarble(true);
+                  if (onMarbleLost) {
+                    onMarbleLost(marbleId, marbleColor);
+                  }
+                });
+              }
+            }
+          });
         });
       });
     };
 
     Matter.Events.on(engine, "collisionStart", collisionHandler);
+
+    const updateHandler = () => {
+      liftsRef.current.forEach((lift, liftId) => {
+        if (lift.hasMarble) {
+          const updatedLift = updateLift(lift);
+          liftsRef.current.set(liftId, updatedLift);
+          
+          marbleBodiesRef.current.forEach(({ body: marbleBody }) => {
+            const dx = Math.abs(marbleBody.position.x - lift.platformBody.position.x);
+            const dy = marbleBody.position.y - lift.platformBody.position.y;
+            if (dx < 30 && dy > -5 && dy < 25) {
+              Matter.Body.setPosition(marbleBody, {
+                x: marbleBody.position.x,
+                y: lift.platformBody.position.y - 20,
+              });
+              Matter.Body.setVelocity(marbleBody, { x: 0, y: 0 });
+            }
+          });
+        }
+      });
+    };
+
+    Matter.Events.on(engine, "beforeUpdate", updateHandler);
 
     const checkMarblesBounds = () => {
       const now = Date.now();
@@ -394,6 +534,7 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     return () => {
       clearInterval(boundsCheckInterval);
       Matter.Events.off(engine, "collisionStart", collisionHandler);
+      Matter.Events.off(engine, "beforeUpdate", updateHandler);
       Matter.Render.stop(render);
       Matter.Runner.stop(runner);
       Matter.Engine.clear(engine);
