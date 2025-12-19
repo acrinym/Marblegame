@@ -26,61 +26,45 @@ export const BUILT_IN_LEVELS: LevelData[] = [
     id: "level-1",
     name: "Thales of Miletus",
     subtitle: "The First Philosopher",
-    description: "Authentic recreation of the classic Thales contraption with spirals, diverters and cannons",
+    description: "Guide marbles through angled tracks and diverters to matching exit bins",
     difficulty: "easy",
     targetScore: 5000,
-    leonardoNote: "Recreate the legendary machine: guide marbles through spirals, cannons and diverters to reach their colored bins.",
+    leonardoNote: "Every journey begins with a single marble. Master the fundamentals before reaching for the stars.",
     contraptions: [
-      // Entry funnels (left and right)
-      { id: "funnel-left", type: "entryFunnel", x: 200, y: 50 },
-      { id: "funnel-right", type: "entryFunnel", x: 1000, y: 50 },
+      // Entry funnel at center top
+      { id: "funnel-1", type: "entryFunnel", x: 600, y: 50 },
 
-      // Left spiral track (corkscrew) - starts directly under funnel
-      {
-        id: "left-spiral",
-        type: "spiralTrack",
-        x: 200,
-        y: 100,
-        state: { turns: 1.5, startRadius: 60, endRadius: 40, verticalDrop: 300, clockwise: true }
-      },
-      // Diverter at base of left spiral
-      { id: "diverter-left", type: "diverter", x: 350, y: 450 },
-      // Path to red bin: quarter pipe then angled track
-      { id: "track-left-to-red-curve", type: "quarterPipe", x: 300, y: 500, state: { direction: "sw", radius: 80 } },
-      { id: "track-left-to-red", type: "track", x: 250, y: 580, angle: -Math.PI / 4, state: { length: 150 } },
-      // Path from left diverter to center track
-      { id: "track-left-to-center", type: "track", x: 450, y: 450, angle: 0, state: { length: 300 } },
-
-      // Central diverter to split to yellow or to right side
-      { id: "diverter-center", type: "diverter", x: 600, y: 500 },
-      // Path to yellow bin
-      { id: "track-center-to-yellow", type: "track", x: 550, y: 600, angle: -Math.PI / 4, state: { length: 150 } },
-      // Path from central diverter to right side
-      { id: "track-center-to-right", type: "track", x: 650, y: 600, angle: Math.PI / 4, state: { length: 150 } },
-
-      // Right spiral track (mirror of left) - starts directly under funnel
-      {
-        id: "right-spiral",
-        type: "spiralTrack",
-        x: 1000,
-        y: 100,
-        state: { turns: 1.5, startRadius: 60, endRadius: 40, verticalDrop: 300, clockwise: false }
-      },
-      // Cannon acting as crossbow launcher from right funnel to upper rail
-      {
-        id: "cannon-right",
-        type: "cannon",
-        x: 1000,
-        y: 150,
-        angle: Math.PI
-      },
-      // Diverter before blue path
-      { id: "diverter-right", type: "diverter", x: 850, y: 450 },
-      // Path to blue bin
-      { id: "track-right-to-blue-upper", type: "track", x: 800, y: 600, angle: 0, state: { length: 300 } },
-      { id: "track-right-to-blue", type: "track", x: 900, y: 650, angle: -Math.PI / 4, state: { length: 150 } },
-
-      // Exit bins
+      // Initial drop catches marble and guides left or right
+      { id: "track-initial-left", type: "track", x: 550, y: 150, angle: Math.PI / 6, state: { length: 120 } },
+      { id: "track-initial-right", type: "track", x: 650, y: 150, angle: -Math.PI / 6, state: { length: 120 } },
+      
+      // Main diverter in center
+      { id: "diverter-1", type: "diverter", x: 600, y: 250 },
+      
+      // Left path - leads to red bin
+      { id: "track-left-1", type: "track", x: 450, y: 300, angle: Math.PI / 5, state: { length: 150 } },
+      { id: "track-left-2", type: "track", x: 350, y: 400, angle: Math.PI / 6, state: { length: 150 } },
+      { id: "track-left-3", type: "track", x: 280, y: 520, angle: Math.PI / 8, state: { length: 150 } },
+      { id: "track-left-4", type: "track", x: 250, y: 620, angle: Math.PI / 10, state: { length: 100 } },
+      
+      // Right path - leads to blue bin  
+      { id: "track-right-1", type: "track", x: 750, y: 300, angle: -Math.PI / 5, state: { length: 150 } },
+      { id: "track-right-2", type: "track", x: 850, y: 400, angle: -Math.PI / 6, state: { length: 150 } },
+      { id: "track-right-3", type: "track", x: 920, y: 520, angle: -Math.PI / 8, state: { length: 150 } },
+      { id: "track-right-4", type: "track", x: 950, y: 620, angle: -Math.PI / 10, state: { length: 100 } },
+      
+      // Center path - diverter toggles to send to yellow
+      { id: "diverter-2", type: "diverter", x: 600, y: 350 },
+      { id: "track-center-1", type: "track", x: 550, y: 420, angle: Math.PI / 8, state: { length: 120 } },
+      { id: "track-center-2", type: "track", x: 650, y: 420, angle: -Math.PI / 8, state: { length: 120 } },
+      { id: "track-center-3", type: "track", x: 600, y: 520, angle: 0, state: { length: 150 } },
+      { id: "track-center-4", type: "track", x: 600, y: 620, angle: 0, state: { length: 100 } },
+      
+      // Copper coils for speed boost
+      { id: "coil-1", type: "copperCoils", x: 400, y: 550, angle: Math.PI / 6 },
+      { id: "coil-2", type: "copperCoils", x: 800, y: 550, angle: -Math.PI / 6 },
+      
+      // Exit bins - Red (left), Yellow (center), Blue (right)
       { id: "exit-red", type: "exitBin", x: 250, y: 700, state: { color: "red" } },
       { id: "exit-yellow", type: "exitBin", x: 600, y: 700, state: { color: "yellow" } },
       { id: "exit-blue", type: "exitBin", x: 950, y: 700, state: { color: "blue" } },
