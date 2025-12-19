@@ -35,13 +35,13 @@ export const BUILT_IN_LEVELS: LevelData[] = [
       { id: "funnel-left", type: "entryFunnel", x: 200, y: 50 },
       { id: "funnel-right", type: "entryFunnel", x: 1000, y: 50 },
 
-      // Left spiral track (corkscrew)
+      // Left spiral track (corkscrew) - starts directly under funnel
       {
         id: "left-spiral",
         type: "spiralTrack",
         x: 200,
-        y: 150,
-        state: { turns: 1.5, startRadius: 110, endRadius: 70, verticalDrop: 350, clockwise: true }
+        y: 100,
+        state: { turns: 1.5, startRadius: 60, endRadius: 40, verticalDrop: 300, clockwise: true }
       },
       // Diverter at base of left spiral
       { id: "diverter-left", type: "diverter", x: 350, y: 450 },
@@ -58,13 +58,13 @@ export const BUILT_IN_LEVELS: LevelData[] = [
       // Path from central diverter to right side
       { id: "track-center-to-right", type: "track", x: 650, y: 600, angle: Math.PI / 4, state: { length: 150 } },
 
-      // Right spiral track (mirror of left)
+      // Right spiral track (mirror of left) - starts directly under funnel
       {
         id: "right-spiral",
         type: "spiralTrack",
         x: 1000,
-        y: 150,
-        state: { turns: 1.5, startRadius: 110, endRadius: 70, verticalDrop: 350, clockwise: false }
+        y: 100,
+        state: { turns: 1.5, startRadius: 60, endRadius: 40, verticalDrop: 300, clockwise: false }
       },
       // Cannon acting as crossbow launcher from right funnel to upper rail
       {

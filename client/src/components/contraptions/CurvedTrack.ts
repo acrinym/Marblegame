@@ -155,7 +155,8 @@ export function createHalfPipe(
 }
 
 /**
- * Creates a spiral track that descends in a corkscrew pattern
+ * Creates a spiral track that descends - actually a series of connected ramp segments
+ * forming a continuous slope for marbles to roll down
  */
 export function createSpiralTrack(
   world: Matter.World,
@@ -170,50 +171,44 @@ export function createSpiralTrack(
 ): CurvedTrack {
   const bodies: Matter.Body[] = [];
   
-  const totalAngle = turns * 2 * Math.PI * (clockwise ? 1 : -1);
-  const segmentLength = 12;
-  const avgRadius = (startRadius + endRadius) / 2;
-  const arcLength = Math.abs(totalAngle) * avgRadius;
-  const segmentCount = Math.max(20, Math.ceil(arcLength / segmentLength));
+  const segmentCount = Math.max(15, Math.ceil(turns * 12));
+  const segmentLength = verticalDrop / segmentCount;
+  const horizontalSpread = (startRadius - endRadius);
   
-  const wallThickness = 5;
-  const trackWidth = 18;
+  const direction = clockwise ? 1 : -1;
+  const trackThickness = 8;
 
-  const createSpiralRail = (radiusOffset: number, labelSuffix: string) => {
-    for (let i = 0; i < segmentCount; i++) {
-      const t = i / segmentCount;
-      const currentAngle = t * totalAngle;
-      
-      const currentRadius = startRadius + (endRadius - startRadius) * t + radiusOffset;
-      const currentY = startY + verticalDrop * t;
-      
-      const x = startX + currentRadius * Math.cos(currentAngle);
-      const y = currentY + currentRadius * Math.sin(currentAngle) * 0.3;
-      
-      const nextT = (i + 1) / segmentCount;
-      const nextAngle = nextT * totalAngle;
-      const rotation = (currentAngle + nextAngle) / 2 + Math.PI / 2;
+  for (let i = 0; i < segmentCount; i++) {
+    const t = i / segmentCount;
+    const nextT = (i + 1) / segmentCount;
+    
+    const currentY = startY + verticalDrop * t;
+    const nextY = startY + verticalDrop * nextT;
+    
+    const wavePhase = t * turns * 2 * Math.PI;
+    const xOffset = Math.sin(wavePhase) * horizontalSpread * 0.5 * direction;
+    
+    const x = startX + xOffset;
+    const y = (currentY + nextY) / 2;
+    
+    const angle = Math.atan2(nextY - currentY, xOffset * 0.1) + (direction * 0.1);
 
-      const segment = Matter.Bodies.rectangle(x, y, segmentLength + 2, wallThickness, {
-        isStatic: true,
-        angle: rotation,
-        label: `spiral-track-${labelSuffix}-${id}-${i}`,
-        friction: 0.05,
-        restitution: 0.15,
-        render: { 
-          fillStyle: "#7a4e2a",
-          strokeStyle: "#5a3a1a",
-          lineWidth: 1,
-        },
-        chamfer: { radius: 1 }
-      });
-      
-      bodies.push(segment);
-    }
-  };
-
-  createSpiralRail(trackWidth / 2, "outer");
-  createSpiralRail(-trackWidth / 2, "inner");
+    const segment = Matter.Bodies.rectangle(x, y, segmentLength + 4, trackThickness, {
+      isStatic: true,
+      angle: angle,
+      label: `spiral-track-floor-${id}-${i}`,
+      friction: 0.02,
+      restitution: 0.1,
+      render: { 
+        fillStyle: "#8b6914",
+        strokeStyle: "#6b5010",
+        lineWidth: 1,
+      },
+      chamfer: { radius: 2 }
+    });
+    
+    bodies.push(segment);
+  }
   
   Matter.Composite.add(world, bodies);
   
@@ -221,7 +216,7 @@ export function createSpiralTrack(
     bodies,
     id,
     startAngle: 0,
-    endAngle: totalAngle,
-    radius: avgRadius,
+    endAngle: turns * 2 * Math.PI,
+    radius: (startRadius + endRadius) / 2,
   };
 }
