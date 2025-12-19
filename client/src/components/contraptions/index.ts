@@ -13,6 +13,8 @@ export * from "./Spring";
 export * from "./Cannon";
 export * from "./Destructor";
 export * from "./Blocker";
+export * from "./Heater";
+export * from "./Freezer";
 
 export type ContraptionType = 
   | "diverter"
@@ -32,6 +34,8 @@ export type ContraptionType =
   | "cannon"
   | "destructor"
   | "blocker"
+  | "heater"
+  | "freezer"
   | "vortexFunnel"
   | "exitBin";
 

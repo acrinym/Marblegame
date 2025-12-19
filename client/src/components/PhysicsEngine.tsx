@@ -48,6 +48,12 @@ import {
   type DestructorState,
   createBlocker,
   type BlockerState,
+  createHeater,
+  applyHeat,
+  type HeaterState,
+  createFreezer,
+  applyFreeze,
+  type FreezerState,
 } from "./contraptions";
 
 const MARBLE_COLORS: Record<MarbleColor, string> = {
@@ -115,6 +121,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   const cannonsRef = useRef<Map<string, CannonState>>(new Map());
   const destructorsRef = useRef<Map<string, DestructorState>>(new Map());
   const blockersRef = useRef<Map<string, BlockerState>>(new Map());
+  const heatersRef = useRef<Map<string, HeaterState>>(new Map());
+  const freezersRef = useRef<Map<string, FreezerState>>(new Map());
   const marbleColorsRef = useRef<Map<string, MarbleColor>>(new Map());
   const [isInitialized, setIsInitialized] = useState(false);
   
@@ -178,6 +186,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
       cannonsRef.current.clear();
       destructorsRef.current.clear();
       blockersRef.current.clear();
+      heatersRef.current.clear();
+      freezersRef.current.clear();
 
       contraptions.forEach((config) => {
         const { id, type, x, y, angle = 0, state = {} } = config;
@@ -254,6 +264,14 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
           case "blocker":
             const blocker = createBlocker(world, x, y, id, state?.width || 60, state?.height || 20, angle);
             blockersRef.current.set(id, blocker);
+            break;
+          case "heater":
+            const heater = createHeater(world, x, y, id, state?.width || 60, state?.intensity || 1.5);
+            heatersRef.current.set(id, heater);
+            break;
+          case "freezer":
+            const freezer = createFreezer(world, x, y, id, state?.width || 60, state?.slowFactor || 0.5);
+            freezersRef.current.set(id, freezer);
             break;
           default:
             console.warn(`Unknown contraption type: ${type}`);
@@ -468,6 +486,18 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
                   }
                 });
               }
+            }
+          });
+
+          heatersRef.current.forEach((heater, heaterId) => {
+            if (heater.sensorBody && (bodyA === marbleBody && bodyB === heater.sensorBody || bodyB === marbleBody && bodyA === heater.sensorBody)) {
+              applyHeat(marbleBody, heater);
+            }
+          });
+
+          freezersRef.current.forEach((freezer, freezerId) => {
+            if (freezer.sensorBody && (bodyA === marbleBody && bodyB === freezer.sensorBody || bodyB === marbleBody && bodyA === freezer.sensorBody)) {
+              applyFreeze(marbleBody, freezer);
             }
           });
         });

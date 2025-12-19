@@ -39,6 +39,8 @@ const CONTRAPTION_PALETTE = [
   { type: "cannon" as ContraptionType, name: "Cannon", description: "Launches marble", color: "#374151" },
   { type: "destructor" as ContraptionType, name: "Destructor", description: "Destroys marble (hazard)", color: "#7c3aed" },
   { type: "blocker" as ContraptionType, name: "Blocker", description: "Blocks path", color: "#ef4444" },
+  { type: "heater" as ContraptionType, name: "Heater", description: "Speeds up marble", color: "#f97316" },
+  { type: "freezer" as ContraptionType, name: "Freezer", description: "Slows down marble", color: "#3b82f6" },
 ];
 
 const PAINTER_COLORS: MarbleColor[] = ["red", "orange", "yellow", "green", "blue", "purple"];
