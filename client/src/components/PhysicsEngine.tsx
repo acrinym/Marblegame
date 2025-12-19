@@ -25,6 +25,7 @@ import {
   type CornerCatcher,
   createQuarterPipe,
   createHalfPipe,
+  createSpiralTrack,
   type CurvedTrack as CurvedTrackState,
   createLift,
   activateLift,
@@ -162,6 +163,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         height,
         wireframes: false,
         background: "#1a1a2e",
+        showAngleIndicator: false,
+        pixelRatio: window.devicePixelRatio,
       },
     });
     renderRef.current = render;
@@ -238,6 +241,17 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
             const halfDir = state?.orientation || "bottom";
             const hPipe = createHalfPipe(world, x, y, id, halfDir, state?.radius || 60);
             curvedTracksRef.current.set(id, hPipe);
+            break;
+          case "spiralTrack":
+            const spiral = createSpiralTrack(
+              world, x, y, id,
+              state?.turns || 2,
+              state?.startRadius || 80,
+              state?.endRadius || 60,
+              state?.verticalDrop || 200,
+              state?.clockwise !== false
+            );
+            curvedTracksRef.current.set(id, spiral);
             break;
           case "lift":
             const lift = createLift(world, x, y, id, state?.height || 200);

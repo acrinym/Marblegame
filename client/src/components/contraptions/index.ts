@@ -27,6 +27,7 @@ export type ContraptionType =
   | "curvedTrack"
   | "quarterPipe"
   | "halfPipe"
+  | "spiralTrack"
   | "lift"
   | "brake"
   | "teleporter"
@@ -37,6 +38,8 @@ export type ContraptionType =
   | "heater"
   | "freezer"
   | "vortexFunnel"
+  | "entryFunnel"
+  | "track"
   | "exitBin";
 
 export interface BaseContraption {
