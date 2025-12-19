@@ -44,6 +44,13 @@ export interface PlacedComponent {
   ports: ComponentPorts;
 }
 
+const TYPE_MAPPING: Record<string, string> = {
+  "straightTrack": "track",
+  "curvedTrack": "spiralTrack",
+  "triggeredDiverter": "triggeredDiverter",
+  "sensor": "sensor",
+};
+
 const PORT_DEFINITIONS: Record<string, (props: any) => { entryOffset: { x: number; y: number }; exits: Record<string, { x: number; y: number; direction: number }> }> = {
   entryFunnel: () => ({
     entryOffset: { x: 0, y: -40 },
@@ -56,12 +63,15 @@ const PORT_DEFINITIONS: Record<string, (props: any) => { entryOffset: { x: numbe
     const length = props?.length || 200;
     const angle = ((props?.angle || 0) * Math.PI) / 180;
     const halfLen = length / 2;
+    const exitX = halfLen * Math.cos(angle);
+    const exitY = halfLen * Math.sin(angle);
     return {
-      entryOffset: { x: -halfLen * Math.cos(angle), y: -halfLen * Math.sin(angle) },
+      entryOffset: { x: -exitX, y: -exitY },
       exits: {
-        bottom: { x: halfLen * Math.cos(angle), y: halfLen * Math.sin(angle), direction: angle },
-        left: { x: -halfLen * Math.cos(angle), y: halfLen * Math.sin(angle), direction: angle + Math.PI },
-        right: { x: halfLen * Math.cos(angle), y: halfLen * Math.sin(angle), direction: angle }
+        bottom: { x: exitX, y: exitY, direction: angle },
+        left: { x: -exitX, y: -exitY, direction: angle + Math.PI },
+        right: { x: exitX, y: exitY, direction: angle },
+        end: { x: exitX, y: exitY, direction: angle }
       }
     };
   },
@@ -127,17 +137,26 @@ const PORT_DEFINITIONS: Record<string, (props: any) => { entryOffset: { x: numbe
     const length = props?.length || 150;
     const angle = props?.angle || 0;
     const halfLen = length / 2;
+    const exitX = halfLen * Math.cos(angle);
+    const exitY = halfLen * Math.sin(angle);
     return {
       entryOffset: { x: -halfLen * Math.cos(angle), y: -halfLen * Math.sin(angle) },
       exits: {
-        bottom: { x: halfLen * Math.cos(angle), y: halfLen * Math.sin(angle), direction: angle }
+        bottom: { x: exitX, y: exitY, direction: angle },
+        right: { x: exitX, y: exitY, direction: angle },
+        left: { x: -exitX, y: -exitY, direction: angle + Math.PI },
+        end: { x: exitX, y: exitY, direction: angle }
       }
     };
   }
 };
 
 function getPortDefinition(type: string, props: any) {
-  const defFn = PORT_DEFINITIONS[type];
+  let defFn = PORT_DEFINITIONS[type];
+  if (!defFn) {
+    const mappedType = TYPE_MAPPING[type] || type;
+    defFn = PORT_DEFINITIONS[mappedType];
+  }
   if (defFn) {
     return defFn(props);
   }
@@ -147,38 +166,52 @@ function getPortDefinition(type: string, props: any) {
   };
 }
 
+function getMappedType(type: string): string {
+  return TYPE_MAPPING[type] || type;
+}
+
+function rotatePoint(x: number, y: number, angle: number): { x: number; y: number } {
+  return {
+    x: x * Math.cos(angle) - y * Math.sin(angle),
+    y: x * Math.sin(angle) + y * Math.cos(angle)
+  };
+}
+
 export function calculatePosition(
   component: LevelComponent,
   placedComponents: Map<string, PlacedComponent>
-): { x: number; y: number } {
+): { x: number; y: number; inheritedAngle: number } {
   if (component.x !== undefined && component.y !== undefined && !component.anchoredTo) {
-    return { x: component.x, y: component.y };
+    return { x: component.x, y: component.y, inheritedAngle: 0 };
   }
   
   if (!component.anchoredTo) {
     console.warn(`Component ${component.id} has no position or anchor`);
-    return { x: 600, y: 400 };
+    return { x: 600, y: 400, inheritedAngle: 0 };
   }
   
   const parent = placedComponents.get(component.anchoredTo);
   if (!parent) {
     console.warn(`Parent ${component.anchoredTo} not found for ${component.id}`);
-    return { x: 600, y: 400 };
+    return { x: 600, y: 400, inheritedAngle: 0 };
   }
   
   const anchorPort = component.anchorPort || "bottom";
   const parentExit = parent.ports.exit[anchorPort];
   
   if (!parentExit) {
-    console.warn(`Exit port ${anchorPort} not found on parent ${parent.id}`);
-    return { x: parent.x, y: parent.y + 50 };
+    console.warn(`Exit port ${anchorPort} not found on parent ${parent.id}, available: ${Object.keys(parent.ports.exit).join(", ")}`);
+    return { x: parent.x, y: parent.y + 60, inheritedAngle: 0 };
   }
   
   const childDef = getPortDefinition(component.type, component.properties);
   
+  const rotatedEntry = rotatePoint(childDef.entryOffset.x, childDef.entryOffset.y, parentExit.direction - Math.PI / 2);
+  
   return {
-    x: parentExit.x - childDef.entryOffset.x,
-    y: parentExit.y - childDef.entryOffset.y
+    x: parentExit.x - rotatedEntry.x,
+    y: parentExit.y - rotatedEntry.y,
+    inheritedAngle: parentExit.direction
   };
 }
 
@@ -192,14 +225,21 @@ export function loadLevel(levelData: LevelJSON): PlacedComponent[] {
   const anchoredComponents = components.filter(c => c.anchoredTo);
   
   for (const comp of absoluteComponents) {
+    const mappedType = getMappedType(comp.type);
     const portDef = getPortDefinition(comp.type, comp.properties);
+    const angle = comp.properties?.angle ? (comp.properties.angle * Math.PI) / 180 : 0;
+    
     const placed: PlacedComponent = {
       id: comp.id,
-      type: comp.type,
+      type: mappedType,
       x: comp.x!,
       y: comp.y!,
-      angle: 0,
-      properties: { ...comp.properties, color: comp.color },
+      angle,
+      properties: { 
+        ...comp.properties, 
+        color: comp.color,
+        length: comp.properties?.length || 150
+      },
       ports: {
         entry: [{ x: comp.x! + portDef.entryOffset.x, y: comp.y! + portDef.entryOffset.y, direction: -Math.PI / 2 }],
         exit: {}
@@ -237,16 +277,25 @@ export function loadLevel(levelData: LevelJSON): PlacedComponent[] {
     
     for (const comp of nextBatch) {
       const pos = calculatePosition(comp, placedComponents);
+      const mappedType = getMappedType(comp.type);
       const portDef = getPortDefinition(comp.type, comp.properties);
-      const angle = comp.properties?.angle ? (comp.properties.angle * Math.PI) / 180 : 0;
+      
+      let angle = comp.properties?.angle ? (comp.properties.angle * Math.PI) / 180 : 0;
+      if (mappedType === "track" && comp.properties?.angle) {
+        angle = (comp.properties.angle * Math.PI) / 180;
+      }
       
       const placed: PlacedComponent = {
         id: comp.id,
-        type: comp.type,
+        type: mappedType,
         x: pos.x,
         y: pos.y,
         angle,
-        properties: { ...comp.properties, color: comp.color },
+        properties: { 
+          ...comp.properties, 
+          color: comp.color,
+          length: comp.properties?.length || 150
+        },
         ports: {
           entry: [{ x: pos.x + portDef.entryOffset.x, y: pos.y + portDef.entryOffset.y, direction: -Math.PI / 2 }],
           exit: {}

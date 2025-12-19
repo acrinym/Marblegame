@@ -1,4 +1,6 @@
 import type { MarbleColor } from "./stores/useMarbleDrop";
+import { loadLevel, convertToContraptionConfig, type LevelJSON } from "./LevelLoader";
+import level1Json from "../levels/level1_thales.json";
 
 export interface ContraptionConfig {
   id: string;
@@ -21,38 +23,21 @@ export interface LevelData {
   isBonus?: boolean;
 }
 
+function loadJsonLevel(json: LevelJSON): ContraptionConfig[] {
+  const placed = loadLevel(json);
+  return convertToContraptionConfig(placed);
+}
+
 export const BUILT_IN_LEVELS: LevelData[] = [
   {
     id: "level-1",
     name: "Thales of Miletus",
     subtitle: "The First Philosopher",
-    description: "Guide marbles through angled tracks and diverters to matching exit bins",
+    description: "Guide marbles through the anchored track system to matching exit bins",
     difficulty: "easy",
     targetScore: 5000,
     leonardoNote: "Every journey begins with a single marble. Master the fundamentals before reaching for the stars.",
-    contraptions: [
-      // Entry funnel at center top
-      { id: "funnel-1", type: "entryFunnel", x: 600, y: 80 },
-
-      // Main diverter right below funnel - marble lands on angled surface and rolls
-      { id: "diverter-1", type: "diverter", x: 600, y: 160 },
-      
-      // Left path from diverter - staggered tracks leading to red bin
-      { id: "track-left-1", type: "track", x: 480, y: 240, angle: Math.PI / 6, state: { length: 160 } },
-      { id: "track-left-2", type: "track", x: 350, y: 340, angle: Math.PI / 7, state: { length: 160 } },
-      { id: "track-left-3", type: "track", x: 250, y: 450, angle: Math.PI / 8, state: { length: 160 } },
-      { id: "track-left-4", type: "track", x: 180, y: 560, angle: Math.PI / 10, state: { length: 140 } },
-      
-      // Right path from diverter - staggered tracks leading to blue bin
-      { id: "track-right-1", type: "track", x: 720, y: 240, angle: -Math.PI / 6, state: { length: 160 } },
-      { id: "track-right-2", type: "track", x: 850, y: 340, angle: -Math.PI / 7, state: { length: 160 } },
-      { id: "track-right-3", type: "track", x: 950, y: 450, angle: -Math.PI / 8, state: { length: 160 } },
-      { id: "track-right-4", type: "track", x: 1020, y: 560, angle: -Math.PI / 10, state: { length: 140 } },
-      
-      // Exit bins - Red (left), Blue (right)
-      { id: "exit-red", type: "exitBin", x: 150, y: 680, state: { color: "red" } },
-      { id: "exit-blue", type: "exitBin", x: 1050, y: 680, state: { color: "blue" } },
-    ],
+    contraptions: loadJsonLevel(level1Json as LevelJSON),
   },
   {
     id: "level-2",
