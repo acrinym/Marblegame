@@ -1,0 +1,153 @@
+You are spot on. The AI is hallucinating a "telepathic marble" that will somehow jump from a funnel at `y=100` to a track at `y=450` without any structure in between. It’s treating the game like a box of loose Lego bricks dumped on the floor, rather than a connected machine.
+
+To fix this, we need to teach the AI that **Geometry follows Topology**. In other words: "Where things are" depends entirely on "what they are connected to."
+
+Here is the **"Pathing & Connection Standard"** documentation. You should add this to your `docs/COMPONENT_PIPELINE.md` or create a new `docs/PATHING_LOGIC.md` file.
+
+This document forces the AI to stop thinking in absolute coordinates ("Place track at 300, 300") and start thinking in **Flow Chains** ("Connect Track B to the Exit Port of Track A").
+
+---
+
+### File Content: `docs/PATHING_LOGIC.md`
+
+```markdown
+# Pathing System & Connection Logic (The "Spine" of the Machine)
+
+## 1. The Core Misconception
+**CURRENT FAILURE:** The AI treats components as isolated islands.
+**REQUIRED LOGIC:** The game is a **Continuous Flow System**. A "Path" is not just a visual line; it is a strict **Parent-Child dependency**.
+
+**Rule #1:** A marble must *never* touch "empty air" between components.
+**Rule #2:** If Component A connects to Component B, Component B's position is **calculated relative** to Component A's *Exit Port*, not placed arbitrarily.
+
+---
+
+## 2. Anatomy of a Component
+Every contraption (Funnel, Track, Diverter) must expose standard "Ports" in its code interface.
+
+### The `Component` Interface
+```typescript
+interface Component {
+  id: string;
+  type: string;
+  x: number;  // Center X
+  y: number;  // Center Y
+  
+  // The vital connection points (Relative to center X,Y)
+  inputs: { xOffset: number, yOffset: number }[]; 
+  exits:  { xOffset: number, yOffset: number }[];
+}
+
+```
+
+### Example: The "Standard Curve" (Quarter Pipe)
+
+* **Input:** Top Center (0, -radius)
+* **Exit:** Bottom Right (+radius, 0)
+* **Connection Logic:** If we attach this to a previous piece, we align this `Input` with the previous piece's `Exit`.
+
+---
+
+## 3. How "Paths" Work (The Grid System)
+
+We cannot use free-form coordinates for a puzzle game. We must use a **Node-Link System** or a **Snapping Grid**.
+
+### A. The "Snapping" Algorithm
+
+When building a level, we don't say "Place Track at 500, 500." We say:
+
+> "Attach a **Right-Curve** to the **Bottom-Exit** of **Funnel_1**."
+
+**The Math:**
+
+1. Get `Funnel_1` world position: `(Fx, Fy)`.
+2. Get `Funnel_1` Exit Offset: `(0, +50)`.
+3. **Anchor Point:** `(Fx, Fy + 50)`.
+4. Get `Right-Curve` Input Offset: `(0, -50)` (assuming top entry).
+5. **New Component Position:** `(AnchorX - InputOffset.x, AnchorY - InputOffset.y)`.
+
+### B. Visualizing the "Path"
+
+The "Path" is the **negative space** inside the rails.
+
+* **Wrong:** Drawing two lines and hoping the marble fits.
+* **Right:** Define the *centerline* curve first. Then generate the left rail at `center - width/2` and right rail at `center + width/2`.
+
+---
+
+## 4. The "Connector" Pieces (The Glue)
+
+The AI keeps forgetting that straight lines don't just "happen." We need explicit connector types to bridge gaps.
+
+| Piece | Function | Visual |
+| --- | --- | --- |
+| **Straight Rail** | Connects two aligned ports. | Two parallel rectangles. |
+| **Flex-Hose** | Connects misaligned ports. | A Bezier curve generated rail. |
+| **Drop Tube** | A vertical fall. | Two vertical walls (Gravity does the work). |
+
+---
+
+## 5. The "Stack" Data Structure (JSON)
+
+The Level Data must reflect this connectivity, not just a list of items.
+
+**BAD (Current):**
+
+```json
+[
+  { "type": "funnel", "x": 500, "y": 100 },
+  { "type": "track", "x": 500, "y": 600 } // <-- GAP! Marble falls 500px through air?
+]
+
+```
+
+**GOOD (Linked List / Graph):**
+
+```json
+[
+  { 
+    "id": "start_funnel", 
+    "type": "funnel", 
+    "x": 500, 
+    "y": 100,
+    "next": "track_segment_1" // Explicit Connection
+  },
+  { 
+    "id": "track_segment_1", 
+    "type": "straight_rail",
+    "length": 400,
+    "anchoredTo": "start_funnel" // The code calculates X/Y automatically
+  }
+]
+
+```
+
+---
+
+## 6. Implementation Strategy for Replit
+
+**Step 1:** Define the `Port` system on all existing components.
+
+* *Action:* "Update `CurvedTrack.ts` and `Diverter.ts` to export `getPorts(x, y, rotation)` which returns absolute coordinates for Entry and Exit points."
+
+**Step 2:** Create a `TrackBuilder` utility.
+
+* *Action:* "Create `TrackBuilder.ts`. It takes a `startPoint` and a list of components. It places the first component, calculates its exit, snaps the next component to that exit, and repeats."
+
+**Step 3:** visual Debugging.
+
+* *Action:* "Draw bright Green Dots at every `Entry` port and bright Red Dots at every `Exit` port. If a Red Dot is not touching a Green Dot, the path is BROKEN."
+
+```
+
+### Next Step for You
+
+Feed this `docs/PATHING_LOGIC.md` content to Replit and give it this prompt:
+
+> "I have created a new documentation file `docs/PATHING_LOGIC.md`. Read it carefully.
+>
+> 1.  Refactor `PhysicsEngine.tsx` and the Level Loader to implement this **Snapping/Anchor system**.
+> 2.  Stop using absolute coordinates for everything.
+> 3.  Create a test level where a Funnel connects *physically* to a Curved Track, which connects to a Straight Rail, which connects to an Exit Bin, with ZERO gaps."
+
+```

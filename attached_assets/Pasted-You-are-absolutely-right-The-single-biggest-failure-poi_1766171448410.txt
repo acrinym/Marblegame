@@ -1,0 +1,165 @@
+You are absolutely right. The single biggest failure point for AI coding agents is **context amnesia**. If Replit doesn't know *exactly* how a specific piece of your physics engine is supposed to work (e.g., that a "Lift" isn't just a box moving up, but a state-machine-driven kinematic body), it will hallucinate broken code every time you ask it to fix a bug.
+
+You need a **"Source of Truth"**—a technical design document that acts as the brain for the project.
+
+Here is the comprehensive **`COMPONENT_PIPELINE.md`**. You should create this file in your project root (e.g., `docs/COMPONENT_PIPELINE.md`). Anytime you start a new chat or prompt Replit, point it to this file first.
+
+---
+
+### File Content: `docs/COMPONENT_PIPELINE.md`
+
+```markdown
+# Marble Drop (Schauberger Edition) - Component Pipeline & Physics Logic
+
+## 1. Core Physics Principles
+* **Engine:** Matter.js (2D Physics).
+* **Rendering:** Phaser 3 (or Matter.Render for debug). Visuals use textures (`wood.jpg`, `copper.png`) mapped to physics bodies.
+* **Marble Physics:**
+    * Marbles are high-density, low-friction circles.
+    * **Movement:** Gravity-driven (y-axis positive).
+    * **Interaction:** Marbles trigger logic via **Sensors** (invisible non-colliding bodies) or **Collisions** (physical bounces).
+
+---
+
+## 2. Component Reference
+
+### A. Curved Track (TrackSegment)
+* **Thematic Visual:** Smooth, bent wood or copper rails.
+* **Physics Implementation:**
+    * **Old Way (Avoid):** Chain of static circles (creates bumpy "bead" effect).
+    * **Current Standard:** A chain of **Tangential Rectangles**.
+    * **Construction:** Calculate the tangent angle at every *N* degrees along an arc. Place a rectangle rotated to that angle. This creates a smooth polygon surface that marbles roll over silently.
+    * **Walls:** Tracks have two "rails" (inner and outer) created as separate bodies to form a channel.
+* **Parameters:** `radius`, `startAngle`, `endAngle`, `trackWidth`.
+
+### B. Vortex Funnel (Start Point)
+* **Thematic Visual:** A spiral copper basin or water vortex that swirls the marble before dropping it.
+* **Physics Implementation:**
+    * **Geometry:** A `Matter.Bodies.trapezoid` or a custom polygon forming a "cup" shape.
+    * **Release Mechanism:** A small static "stopper" body at the bottom hole.
+* **Logic:**
+    * **State:** `Idle` -> `Swirling` -> `Release`.
+    * **Action:** When clicked, the "stopper" body is removed (or made `isSensor: true`), allowing gravity to pull the marble through.
+    * **Force:** While in `Swirling` state, apply small tangential forces to the marble to simulate water rotation.
+
+### C. Diverter (Switch)
+* **Thematic Visual:** A weighted wooden latch or fluid valve that flips direction.
+* **Physics Implementation:**
+    * **Body:** A single static rectangle pivoted at the center or top.
+    * **Movement:** It does NOT use a physics motor. It uses hard-coded angle setting.
+* **Logic:**
+    * **Trigger:** Click event or collision with a specific sensor.
+    * **Behavior:** Toggles angle between `-30deg` (Left Path) and `+30deg` (Right Path).
+    * **Debounce:** Must have a cooldown (e.g., 200ms) to prevent rapid flickering if a marble sits on top.
+
+### D. Copper Energy Coil (Accelerator)
+* **Thematic Visual:** Spiraled copper tubing that glows when active. Implies electromagnetic or "bio-energy" acceleration.
+* **Physics Implementation:**
+    * **Sensor:** A large invisible rectangle covering the track area (`isSensor: true`).
+* **Logic:**
+    * **Event:** `collisionStart` with the Sensor.
+    * **Action:** Apply a **Vector Force** to the marble.
+    * **Calculation:** Force vector must be aligned with the track's angle at that point.
+    * **Magnitude:** Force should be additive to current velocity, not replacing it.
+
+### E. Lift (Elevator)
+* **Thematic Visual:** A water-counterweighted platform or chain bucket.
+* **Physics Implementation:**
+    * **Platform:** A Kinematic body (or static body with manually updated position). It must collide with marbles.
+    * **Sensor:** A small sensor placed exactly on top of the platform to detect when a marble boards it.
+    * **Rails:** Static vertical walls to keep the marble contained during ascent.
+* **Logic:**
+    * **State Machine:** `Waiting` (Bottom) -> `Ascending` -> `Dumping` (Top) -> `Descending`.
+    * **Trigger:** Marble touches the platform Sensor.
+    * **Update Loop:** Every frame, if `Ascending`, update `body.position.y -= speed`.
+    * **Dumping:** At the top, the lift might tilt (rotate body) or a mechanical "pusher" might activate to eject the marble.
+
+### F. Water Jet Propulsor
+* **Thematic Visual:** A stream of pressurized water.
+* **Physics Implementation:**
+    * **Sensor:** A long, thin rectangle representing the water stream.
+* **Logic:**
+    * **Event:** `collisionActive` (fires every frame the marble is inside).
+    * **Action:** Apply a constant low-magnitude force in the direction of the stream.
+    * **Effect:** Simulates buoyancy and fluid drag. Gravity still applies, resulting in an arced trajectory.
+
+### G. Spinner (Randomizer)
+* **Thematic Visual:** A water wheel or turbine blade.
+* **Physics Implementation:**
+    * **Body:** A cross or star shape (`Matter.Bodies.fromVertices`).
+    * **Constraint:** Pinned to the background using a `Matter.Constraint` (revolute joint).
+* **Logic:**
+    * **Passive:** Rotates freely when hit (physics driven).
+    * **Active:** Can be motorized (`Matter.Body.setAngularVelocity`) to fling marbles that touch it.
+
+### H. Implosion Device (Destructor)
+* **Thematic Visual:** A dark, swirling vortex that compresses matter into nothingness.
+* **Physics Implementation:**
+    * **Sensor:** Circular sensor.
+* **Logic:**
+    * **Event:** `collisionStart`.
+    * **Action:**
+        1. Disable marble physics collision (so it sinks).
+        2. Apply force towards the center of the sensor (attractor).
+        3. Scale down the marble sprite (`scale -= 0.1` per frame).
+        4. When scale < 0.1, remove body from world.
+
+### I. Triggered Diverter
+* **Thematic Visual:** A gate connected via a "hydraulic line" to a pressure plate elsewhere.
+* **Physics Implementation:**
+    * **Gate:** Same as Standard Diverter.
+    * **Trigger:** A separate Sensor body located elsewhere on the map.
+* **Logic:**
+    * **Connection:** The Gate stores the ID of the Trigger.
+    * **Event:** When marble hits Trigger, Gate toggles state.
+
+---
+
+## 3. Data Structures
+
+### Level Data (JSON)
+Each level is defined by a JSON object containing a list of `contraptions`.
+```json
+{
+  "id": "level_1",
+  "contraptions": [
+    {
+      "type": "curvedTrack",
+      "x": 300,
+      "y": 400,
+      "state": { "radius": 100, "startAngle": 0, "endAngle": 1.57 }
+    },
+    {
+      "type": "diverter",
+      "x": 450,
+      "y": 500,
+      "state": { "initialDirection": "left" }
+    }
+  ]
+}
+
+```
+
+### Contraption Interface (TypeScript)
+
+```typescript
+interface Contraption {
+  bodies: Matter.Body[];      // All physical parts
+  sensors: Matter.Body[];     // Triggers/Zones
+  update?: (time: number) => void; // Called every frame (for animations/lifts)
+  onInteract?: (marble: Matter.Body) => void; // Logic handler
+}
+
+```
+
+```
+
+### How to use this with Replit (AI)
+
+When you are asking the AI to write code for a new component (e.g., "Add the Water Jet"), structure your prompt like this:
+
+> "I need to add the **Water Jet Propulsor** component. Please refer to the `docs/COMPONENT_PIPELINE.md` file for the physics implementation and logic requirements. Create the component file `WaterJet.ts` and update `PhysicsEngine.tsx` to handle the `collisionActive` force application as described in the doc."
+
+This forces the AI to check the "Source of Truth" before guessing implementation details.
+
+```

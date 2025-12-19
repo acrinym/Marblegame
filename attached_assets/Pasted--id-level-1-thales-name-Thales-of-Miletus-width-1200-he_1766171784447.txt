@@ -1,0 +1,149 @@
+{
+  "id": "level_1_thales",
+  "name": "Thales of Miletus",
+  "width": 1200,
+  "height": 800,
+  "inventory": {
+    "red": 4,
+    "yellow": 4,
+    "blue": 4
+  },
+  "layout": [
+    {
+      "comment": "--- BASKET 1 (LEFT) SYSTEM ---"
+    },
+    {
+      "id": "funnel_1",
+      "type": "entryFunnel",
+      "x": 300,
+      "y": 100,
+      "next": "spiral_chute"
+    },
+    {
+      "id": "spiral_chute",
+      "type": "curvedTrack",
+      "anchoredTo": "funnel_1",
+      "anchorPort": "bottom",
+      "properties": {
+        "shape": "spiral_visual",
+        "entrySpeed": "slow"
+      },
+      "next": "switch_alpha"
+    },
+    {
+      "id": "switch_alpha",
+      "type": "diverter",
+      "anchoredTo": "spiral_chute",
+      "anchorPort": "bottom",
+      "properties": {
+        "initialDirection": "left",
+        "triggerType": "pressure_plate"
+      },
+      "outputs": {
+        "left": "track_route_red",
+        "right": "track_route_yellow"
+      }
+    },
+    {
+      "id": "track_route_red",
+      "type": "straightTrack",
+      "anchoredTo": "switch_alpha",
+      "anchorPort": "left",
+      "properties": { "length": 200, "angle": 45 },
+      "next": "bin_red"
+    },
+    {
+      "id": "track_route_yellow",
+      "type": "straightTrack",
+      "anchoredTo": "switch_alpha",
+      "anchorPort": "right",
+      "properties": { "length": 200, "angle": 135 },
+      "next": "bin_yellow_1"
+    },
+
+    {
+      "comment": "--- BASKET 2 (RIGHT) SYSTEM ---"
+    },
+    {
+      "id": "funnel_2",
+      "type": "entryFunnel",
+      "x": 900,
+      "y": 100,
+      "next": "crossbow_launcher"
+    },
+    {
+      "id": "crossbow_launcher",
+      "type": "cannon",
+      "anchoredTo": "funnel_2",
+      "anchorPort": "bottom",
+      "properties": {
+        "power": "high",
+        "angle": 180,
+        "visual": "crossbow_sketch"
+      },
+      "next": "upper_rail_network"
+    },
+    {
+      "id": "upper_rail_network",
+      "type": "straightTrack",
+      "x": 600, 
+      "y": 250,
+      "comment": "This receives the ball from the crossbow air-shot",
+      "properties": { "length": 300, "angle": 0 },
+      "next": "sorting_intersection"
+    },
+    {
+      "id": "sorting_intersection",
+      "type": "triggeredDiverter",
+      "anchoredTo": "upper_rail_network",
+      "anchorPort": "right",
+      "properties": {
+        "initialState": "closed",
+        "triggerId": "button_trigger_1" 
+      },
+      "outputs": {
+        "primary": "bin_blue",
+        "secondary": "bin_yellow_2"
+      }
+    },
+    {
+      "id": "button_trigger_1",
+      "type": "sensor",
+      "x": 750,
+      "y": 300,
+      "properties": { "target": "sorting_intersection" }
+    },
+
+    {
+      "comment": "--- EXIT BINS ---"
+    },
+    {
+      "id": "bin_red",
+      "type": "exitBin",
+      "color": "red",
+      "x": 300,
+      "y": 750
+    },
+    {
+      "id": "bin_yellow_1",
+      "type": "exitBin",
+      "color": "yellow",
+      "x": 500,
+      "y": 750
+    },
+    {
+      "id": "bin_yellow_2",
+      "type": "exitBin",
+      "color": "yellow",
+      "x": 700,
+      "y": 750
+    },
+    {
+      "id": "bin_blue",
+      "type": "exitBin",
+      "color": "blue",
+      "x": 900,
+      "y": 750
+    }
+  ]
+}
