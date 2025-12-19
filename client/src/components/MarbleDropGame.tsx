@@ -164,6 +164,7 @@ export const MarbleDropGame = () => {
   return (
     <div className="w-full h-full relative bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
       <PhysicsEngine
+        key={currentLevel?.id || "default"}
         onMarbleReachExit={handleMarbleReachExit}
         onMarbleLost={handleMarbleLost}
         levelContraptions={currentLevel?.contraptions || (placedContraptions.length > 0 ? placedContraptions : undefined)}
