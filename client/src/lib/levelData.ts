@@ -26,58 +26,59 @@ export const BUILT_IN_LEVELS: LevelData[] = [
     id: "level-1",
     name: "Thales of Miletus",
     subtitle: "The First Philosopher",
-    description: "Learn the basics of marble dropping - guide colored marbles to matching exit bins",
+    description: "Learn the basics - guide marbles through diverters to matching exit bins",
     difficulty: "easy",
-    targetScore: 11590,
+    targetScore: 5000,
     leonardoNote: "Every journey begins with a single marble. Master the fundamentals before reaching for the stars.",
     contraptions: [
       // Entry funnels - Basket 1 (Left) and Basket 2 (Right)
-      { id: "funnel-1", type: "entryFunnel", x: 350, y: 80 },
-      { id: "funnel-2", type: "entryFunnel", x: 850, y: 80 },
+      { id: "funnel-1", type: "entryFunnel", x: 300, y: 60 },
+      { id: "funnel-2", type: "entryFunnel", x: 900, y: 60 },
       
-      // Initial tracks from funnels
-      { id: "track-1a", type: "track", x: 350, y: 150, angle: 0, state: { length: 80 } },
-      { id: "track-1b", type: "track", x: 380, y: 190, angle: Math.PI / 6, state: { length: 100 } },
-      { id: "track-2a", type: "track", x: 850, y: 150, angle: 0, state: { length: 80 } },
-      { id: "track-2b", type: "track", x: 820, y: 190, angle: -Math.PI / 6, state: { length: 100 } },
+      // Guide tracks from left funnel down to first diverter
+      { id: "track-L1", type: "track", x: 300, y: 130, angle: Math.PI / 12, state: { length: 80 } },
+      { id: "track-L2", type: "track", x: 340, y: 180, angle: Math.PI / 8, state: { length: 100 } },
+      { id: "track-L3", type: "track", x: 390, y: 240, angle: Math.PI / 10, state: { length: 90 } },
       
-      // Main diverters - these toggle when marbles pass
-      { id: "diverter-1", type: "diverter", x: 450, y: 280 },
-      { id: "diverter-2", type: "diverter", x: 750, y: 280 },
+      // Guide tracks from right funnel down to second diverter
+      { id: "track-R1", type: "track", x: 900, y: 130, angle: -Math.PI / 12, state: { length: 80 } },
+      { id: "track-R2", type: "track", x: 860, y: 180, angle: -Math.PI / 8, state: { length: 100 } },
+      { id: "track-R3", type: "track", x: 810, y: 240, angle: -Math.PI / 10, state: { length: 90 } },
       
-      // Connecting tracks from diverters
-      { id: "track-3a", type: "track", x: 380, y: 340, angle: Math.PI / 5, state: { length: 120 } },
-      { id: "track-3b", type: "track", x: 520, y: 340, angle: -Math.PI / 5, state: { length: 120 } },
-      { id: "track-4a", type: "track", x: 680, y: 340, angle: Math.PI / 5, state: { length: 120 } },
-      { id: "track-4b", type: "track", x: 820, y: 340, angle: -Math.PI / 5, state: { length: 120 } },
+      // Main diverters - toggle when marbles pass
+      { id: "diverter-1", type: "diverter", x: 450, y: 300 },
+      { id: "diverter-2", type: "diverter", x: 750, y: 300 },
       
-      // Secondary diverters for color routing
-      { id: "diverter-3", type: "diverter", x: 350, y: 420 },
-      { id: "diverter-4", type: "diverter", x: 600, y: 400 },
-      { id: "diverter-5", type: "diverter", x: 850, y: 420 },
+      // Tracks from diverters to center rail
+      { id: "track-C1", type: "track", x: 500, y: 360, angle: -Math.PI / 10, state: { length: 100 } },
+      { id: "track-C2", type: "track", x: 700, y: 360, angle: Math.PI / 10, state: { length: 100 } },
       
-      // Tracks leading to exit bins
-      { id: "track-5a", type: "track", x: 280, y: 490, angle: Math.PI / 8, state: { length: 100 } },
-      { id: "track-5b", type: "track", x: 420, y: 490, angle: -Math.PI / 8, state: { length: 100 } },
-      { id: "track-6a", type: "track", x: 530, y: 480, angle: Math.PI / 8, state: { length: 100 } },
-      { id: "track-6b", type: "track", x: 670, y: 480, angle: -Math.PI / 8, state: { length: 100 } },
-      { id: "track-7a", type: "track", x: 780, y: 490, angle: Math.PI / 8, state: { length: 100 } },
-      { id: "track-7b", type: "track", x: 920, y: 490, angle: -Math.PI / 8, state: { length: 100 } },
+      // Center diverter for routing
+      { id: "diverter-3", type: "diverter", x: 600, y: 420 },
       
-      // Final approach tracks
-      { id: "track-8a", type: "track", x: 250, y: 560, angle: Math.PI / 10, state: { length: 80 } },
-      { id: "track-8b", type: "track", x: 600, y: 550, angle: 0, state: { length: 100 } },
-      { id: "track-8c", type: "track", x: 950, y: 560, angle: -Math.PI / 10, state: { length: 80 } },
+      // Outer tracks - left side to Red bin
+      { id: "track-OL1", type: "track", x: 380, y: 380, angle: Math.PI / 6, state: { length: 120 } },
+      { id: "track-OL2", type: "track", x: 320, y: 460, angle: Math.PI / 8, state: { length: 100 } },
+      { id: "track-OL3", type: "track", x: 280, y: 540, angle: Math.PI / 10, state: { length: 100 } },
+      { id: "track-OL4", type: "track", x: 260, y: 620, angle: Math.PI / 12, state: { length: 80 } },
       
-      // Guiding tracks to bins
-      { id: "track-9a", type: "track", x: 320, y: 620, angle: Math.PI / 12, state: { length: 100 } },
-      { id: "track-9b", type: "track", x: 600, y: 610, angle: 0, state: { length: 80 } },
-      { id: "track-9c", type: "track", x: 880, y: 620, angle: -Math.PI / 12, state: { length: 100 } },
+      // Outer tracks - right side to Blue bin
+      { id: "track-OR1", type: "track", x: 820, y: 380, angle: -Math.PI / 6, state: { length: 120 } },
+      { id: "track-OR2", type: "track", x: 880, y: 460, angle: -Math.PI / 8, state: { length: 100 } },
+      { id: "track-OR3", type: "track", x: 920, y: 540, angle: -Math.PI / 10, state: { length: 100 } },
+      { id: "track-OR4", type: "track", x: 940, y: 620, angle: -Math.PI / 12, state: { length: 80 } },
       
-      // Exit bins - Red, Yellow, Blue
-      { id: "exit-red", type: "exitBin", x: 300, y: 700, state: { color: "red" } },
+      // Center tracks to Yellow bin
+      { id: "track-M1", type: "track", x: 550, y: 480, angle: Math.PI / 12, state: { length: 100 } },
+      { id: "track-M2", type: "track", x: 650, y: 480, angle: -Math.PI / 12, state: { length: 100 } },
+      { id: "track-M3", type: "track", x: 580, y: 550, angle: Math.PI / 16, state: { length: 80 } },
+      { id: "track-M4", type: "track", x: 620, y: 550, angle: -Math.PI / 16, state: { length: 80 } },
+      { id: "track-M5", type: "track", x: 600, y: 620, angle: 0, state: { length: 100 } },
+      
+      // Exit bins - Red (left), Yellow (center), Blue (right)
+      { id: "exit-red", type: "exitBin", x: 250, y: 700, state: { color: "red" } },
       { id: "exit-yellow", type: "exitBin", x: 600, y: 700, state: { color: "yellow" } },
-      { id: "exit-blue", type: "exitBin", x: 900, y: 700, state: { color: "blue" } },
+      { id: "exit-blue", type: "exitBin", x: 950, y: 700, state: { color: "blue" } },
     ],
   },
   {

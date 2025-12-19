@@ -1,0 +1,106 @@
+Here is an exact, moment-by-moment narration of completing Level 1: "Thales of Miletus," describing every physical action and mechanical reaction as if you cannot see the screen.
+
+---
+
+### **Initial Setup Description**
+
+You begin facing a hand-drawn engineering blueprint filling the screen. At the very top are two brass funnels—**Basket 1** on the left, **Basket 2** on the right—each a wide-mouthed cone ready to receive marbles. Below them sprawls a chaotic but purposeful network:
+
+- **Upper left region**: A tight spiral chute corkscrewing clockwise, ending at a pressure plate that controls a **diverter gate** (a small wooden drawbridge that flips between two positions).
+- **Center**: A main horizontal rail running left-to-right with button-triggered **spring-loaded lifters** (tiny platforms that launch marbles upward).
+- **Upper right region**: A **crossbow launcher**—a tensioned arm that smacks marbles across a gap to a separate rail network.
+- **Lower region**: Three color-coded bins at the bottom—**Red Bin** (far left), **Yellow Bin** (center), **Blue Bin** (far right)—each a velvet-lined collection tray.
+
+Your inventory at screen-top shows: **4 Red marbles**, **4 Yellow marbles**, **4 Blue marbles**.
+
+---
+
+### **Drop-by-Drop Walkthrough**
+
+**Marble #1: Yellow into Basket 1 (Left Funnel)**
+- You click and hold the **Yellow marble** in your inventory, drag it down to **Basket 1**, and release.
+- It drops into the funnel, vanishes inside, then emerges at the top of the **spiral chute**.
+- The marble rolls *down* the corkscrew, hugging the left wall, making a soft *clink* with each half-turn.
+- It exits the spiral, landing on a **pressure plate**—a brass disk that depresses with a *thunk*.
+- The plate triggers the **diverter gate** directly above it to **flip left**, closing the path to the Red Bin and opening a chute leading toward the Yellow Bin.
+- The marble rolls down the now-open chute, falls three inches vertically onto the **main horizontal rail**, and rolls rightward.
+- It travels smoothly, passes under a wooden arch, and drops perfectly into the **Yellow Bin** at bottom-center with a satisfying *clack*.
+- **The machine is now in State 1**: The left-side diverter gate points left.
+
+**Marble #2: Red into Basket 1**
+- Drag a **Red marble** to **Basket 1** and release.
+- It follows the same spiral path, hits the same pressure plate, but the diverter gate is **already left-facing**, so it stays left.
+- The Red marble rolls down the chute, lands on the main rail, but at the rail's center junction, the left-facing gate directs it into a **side channel** that curves sharply left.
+- It drops into the **Red Bin** (far left). **State unchanged**.
+
+**Marble #3: Red into Basket 1**
+- Drag another **Red marble** to **Basket 1**.
+- Identical journey: spiral, pressure plate (gate stays left), down chute, onto main rail, forced left by diverter, into **Red Bin**.
+- **Red Bin now contains 2 marbles**.
+
+**Marble #4: Red into Basket 1**
+- Drag third **Red marble** to **Basket 1**.
+- Exact same path as above. Into **Red Bin**.
+- **Red Bin now contains 3 marbles**.
+
+**Marble #5: Yellow into Basket 1**
+- Drag a **Yellow marble** to **Basket 1**.
+- Spiral, pressure plate—**the diverter gate flips right** this time because it was hit from the opposite angle.
+- It rolls down the chute, but now at the main rail junction, the **right-facing gate** blocks the left path and opens a **center channel**.
+- The marble drops into the **Yellow Bin**.
+- **Machine is now in State 2**: The left-side diverter gate points right, aligning the center channel for Basket 2's path.
+
+**Marble #6: Red into Basket 1 (Final Basket 1 drop)**
+- Drag final **Red marble** to **Basket 1**.
+- Spiral, pressure plate flips gate **back to left**.
+- Rolls down chute, main rail junction forces it left into **Red Bin**.
+- **Red Bin now has all 4 Red marbles**. The left-side mechanism is now **locked** in the left position.
+
+---
+
+**Marble #7: Yellow into Basket 2 (Right Funnel)**
+- Drag a **Yellow marble** to **Basket 2** (right funnel) and release.
+- It drops into the funnel and immediately lands in the **crossbow launcher**—a wooden arm cocked at 45 degrees.
+- The arm swings forward with a *snap*, striking the marble and **launching it horizontally left** across a 5-inch gap.
+- It lands on a **separate upper-right rail** with a *bonk*, rolls leftward, and hits a **button**—a brass nub that protrudes from the rail.
+- The button **temporarily raises a blocker** in the center junction, preventing Basket 1 marbles from interfering (though none are coming now).
+- The marble rolls off the rail's end, drops vertically two inches onto the **main horizontal rail** (now clear), and rolls right into the **Yellow Bin**.
+- **Machine is now in State 3**: Center blocker is raised for 3 seconds, then automatically lowers.
+
+**Marble #8: Blue into Basket 2**
+- Drag a **Blue marble** to **Basket 2**.
+- Crossbow launch, lands on upper-right rail, rolls left, hits the same **button** (blocker raises again).
+- At the rail's end, it drops onto the main rail, but at the center junction, the **right-facing diverter** (from State 2) shunts it into a **rightward channel**.
+- The channel curves smoothly, the marble rolls down a gentle slope, and drops into the **Blue Bin** (far right).
+
+**Marble #9: Blue into Basket 2**
+- Drag second **Blue marble** to **Basket 2**.
+- Crossbow launch, upper-right rail, button hit (blocker raises), drops to main rail.
+- The right-facing diverter again shunts it right into the channel, down the slope, into **Blue Bin**.
+- **Blue Bin now contains 2 marbles**.
+
+**Marble #10: Blue into Basket 2**
+- Drag third **Blue marble** to **Basket 2**.
+- Identical path: crossbow, button, right diverter, channel, slope, **Blue Bin**.
+- **Blue Bin now contains 3 marbles**.
+
+**Marble #11: Yellow into Basket 2**
+- Drag a **Yellow marble** to **Basket 2**.
+- Crossbow launch, upper-right rail, button hit.
+- This time, as it drops to the main rail, it ** passes under the blocker** (which is lowering) and continues rightward.
+- It bypasses the Blue channel and rolls directly into the **Yellow Bin**.
+- **Yellow Bin now contains 3 marbles**.
+
+**Marble #12: Blue into Basket 2 (Final drop)**
+- Drag final **Blue marble** to **Basket 2**.
+- Crossbow launch, upper-right rail, button hit, drops to main rail.
+- The right-facing diverter shunts it right into the channel, down the slope, and it lands in the **Blue Bin** with a definitive *clunk*.
+- **Blue Bin now contains all 4 Blue marbles**.
+
+---
+
+### **Completion**
+
+All **12 marbles** have completed their journeys. The contraption clicks and whirs to a stop. Each bin contains its correct color: **4 Red** (left), **4 Yellow** (center), **4 Blue** (right). Your inventory remains at 12 marbles (all returned), and the screen displays **11,590 points** with a message: *"Perfect Efficiency! Medici is pleased."*
+
+The level ends with a satisfying *chime* as the blueprint fades, ready for Level 2.

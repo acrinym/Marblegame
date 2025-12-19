@@ -668,30 +668,32 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   };
 
   const createEntryFunnel = (x: number, y: number, id: string) => {
-    const leftWall = Matter.Bodies.rectangle(x - 30, y + 20, 8, 50, {
+    const leftWall = Matter.Bodies.rectangle(x - 35, y, 8, 40, {
       isStatic: true,
-      angle: -Math.PI / 8,
+      angle: -Math.PI / 6,
       render: {
-        fillStyle: "#d4a574",
-        strokeStyle: "#b8935f",
+        fillStyle: "#c9a66b",
+        strokeStyle: "#a68b5b",
         lineWidth: 2,
       },
       label: `entryFunnel-${id}-left`,
     });
     
-    const rightWall = Matter.Bodies.rectangle(x + 30, y + 20, 8, 50, {
+    const rightWall = Matter.Bodies.rectangle(x + 35, y, 8, 40, {
       isStatic: true,
-      angle: Math.PI / 8,
+      angle: Math.PI / 6,
       render: {
-        fillStyle: "#d4a574",
-        strokeStyle: "#b8935f",
+        fillStyle: "#c9a66b",
+        strokeStyle: "#a68b5b",
         lineWidth: 2,
       },
       label: `entryFunnel-${id}-right`,
     });
     
+    Matter.Composite.add(engineRef.current!.world, [leftWall, rightWall]);
+    
     return Matter.Body.create({
-      parts: [leftWall, rightWall],
+      parts: [],
       isStatic: true,
     });
   };
