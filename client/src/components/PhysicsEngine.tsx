@@ -682,14 +682,14 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   };
 
   const createEntryFunnel = (x: number, y: number, id: string) => {
-    const wallLength = 50;
+    const wallLength = 60;
     const wallThickness = 6;
-    const funnelAngle = Math.PI / 5;
-    const gapWidth = 30;
+    const funnelAngle = Math.PI / 6;
+    const bottomGap = 50;
     
     const leftWall = Matter.Bodies.rectangle(
-      x - gapWidth - wallLength * Math.sin(funnelAngle) / 2,
-      y - wallLength * Math.cos(funnelAngle) / 2,
+      x - bottomGap / 2 - (wallLength / 2) * Math.sin(funnelAngle),
+      y - (wallLength / 2) * Math.cos(funnelAngle),
       wallThickness, 
       wallLength, 
       {
@@ -705,8 +705,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     );
     
     const rightWall = Matter.Bodies.rectangle(
-      x + gapWidth + wallLength * Math.sin(funnelAngle) / 2,
-      y - wallLength * Math.cos(funnelAngle) / 2,
+      x + bottomGap / 2 + (wallLength / 2) * Math.sin(funnelAngle),
+      y - (wallLength / 2) * Math.cos(funnelAngle),
       wallThickness, 
       wallLength, 
       {
@@ -829,7 +829,7 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     if (entryFunnelsRef.current.length > 0) {
       const funnel = entryFunnelsRef.current[funnelIndex % entryFunnelsRef.current.length];
       dropX = funnel.x;
-      dropY = funnel.y + 50;
+      dropY = funnel.y - 40;
     }
 
     const props = MARBLE_PROPERTIES[color];
