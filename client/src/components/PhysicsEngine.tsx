@@ -20,6 +20,12 @@ import {
   createPainter,
   paintMarble,
   type PainterState,
+  createCornerCatcher,
+  applyCornerCatcherRedirect,
+  type CornerCatcher,
+  createQuarterPipe,
+  createHalfPipe,
+  type CurvedTrack as CurvedTrackState,
 } from "./contraptions";
 
 const MARBLE_COLORS: Record<MarbleColor, string> = {
@@ -78,6 +84,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   const triggeredDivertersRef = useRef<Map<string, TriggeredDiverterState>>(new Map());
   const spinnersRef = useRef<Map<string, SpinnerState>>(new Map());
   const paintersRef = useRef<Map<string, PainterState>>(new Map());
+  const cornerCatchersRef = useRef<Map<string, CornerCatcher>>(new Map());
+  const curvedTracksRef = useRef<Map<string, CurvedTrackState>>(new Map());
   const marbleColorsRef = useRef<Map<string, MarbleColor>>(new Map());
   const [isInitialized, setIsInitialized] = useState(false);
   
@@ -132,6 +140,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
       triggeredDivertersRef.current.clear();
       spinnersRef.current.clear();
       paintersRef.current.clear();
+      cornerCatchersRef.current.clear();
+      curvedTracksRef.current.clear();
 
       contraptions.forEach((config) => {
         const { id, type, x, y, angle = 0, state = {} } = config;
@@ -163,6 +173,21 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
             const targetColor = state?.targetColor || "blue";
             const painter = createPainter(world, x, y, id, targetColor as MarbleColor);
             paintersRef.current.set(id, painter);
+            break;
+          case "cornerCatcher":
+            const cornerDir = state?.corner || "bottom-left";
+            const catcher = createCornerCatcher(world, x, y, id, cornerDir);
+            cornerCatchersRef.current.set(id, catcher);
+            break;
+          case "quarterPipe":
+            const pipeDir = state?.direction || "se";
+            const qPipe = createQuarterPipe(world, x, y, id, pipeDir, state?.radius || 80);
+            curvedTracksRef.current.set(id, qPipe);
+            break;
+          case "halfPipe":
+            const halfDir = state?.orientation || "bottom";
+            const hPipe = createHalfPipe(world, x, y, id, halfDir, state?.radius || 60);
+            curvedTracksRef.current.set(id, hPipe);
             break;
           default:
             console.warn(`Unknown contraption type: ${type}`);
@@ -229,6 +254,18 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
 
         const painter1 = createPainter(world, 1000, 400, "painter-1", "blue");
         paintersRef.current.set("painter-1", painter1);
+
+        const corner1 = createCornerCatcher(world, 100, 600, "corner-1", "bottom-left");
+        cornerCatchersRef.current.set("corner-1", corner1);
+
+        const corner2 = createCornerCatcher(world, 1100, 600, "corner-2", "bottom-right");
+        cornerCatchersRef.current.set("corner-2", corner2);
+
+        const qPipe1 = createQuarterPipe(world, 300, 350, "qpipe-1", "se", 60);
+        curvedTracksRef.current.set("qpipe-1", qPipe1);
+
+        const qPipe2 = createQuarterPipe(world, 900, 350, "qpipe-2", "sw", 60);
+        curvedTracksRef.current.set("qpipe-2", qPipe2);
       }
 
       createGuideRails(world);
@@ -307,6 +344,13 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
                   marbleBodiesRef.current.set(marbleId, { ...marbleEntry, color: newColor });
                 }
               });
+            }
+          });
+
+          cornerCatchersRef.current.forEach((catcher, catcherId) => {
+            if (catcher.sensorBody && (bodyA === marbleBody && bodyB === catcher.sensorBody || bodyB === marbleBody && bodyA === catcher.sensorBody)) {
+              applyCornerCatcherRedirect(marbleBody, catcher);
+              console.log(`Marble caught and redirected by corner catcher ${catcherId}`);
             }
           });
         });

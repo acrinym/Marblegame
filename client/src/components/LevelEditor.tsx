@@ -29,6 +29,9 @@ const CONTRAPTION_PALETTE = [
   { type: "waterJet" as ContraptionType, name: "Water Jet", description: "Directional force", color: "#4a9eff" },
   { type: "spinner" as ContraptionType, name: "Spinner", description: "Centrifugal fling", color: "#8B4513" },
   { type: "triggeredDiverter" as ContraptionType, name: "Triggered Switch", description: "One-time activation", color: "#666666" },
+  { type: "cornerCatcher" as ContraptionType, name: "Corner Catcher", description: "Catches & redirects marbles", color: "#48bb78" },
+  { type: "quarterPipe" as ContraptionType, name: "Quarter Pipe", description: "90-degree curved track", color: "#8b5a2b" },
+  { type: "halfPipe" as ContraptionType, name: "Half Pipe", description: "180-degree curved track", color: "#a0522d" },
 ];
 
 const PAINTER_COLORS: MarbleColor[] = ["red", "orange", "yellow", "green", "blue", "purple"];
@@ -66,7 +69,15 @@ export function LevelEditor({
       x,
       y,
       angle: 0,
-      state: selectedType === "painter" ? { targetColor: selectedPainterColor } : undefined,
+      state: selectedType === "painter" 
+        ? { targetColor: selectedPainterColor } 
+        : selectedType === "cornerCatcher" 
+          ? { corner: "bottom-left" }
+          : selectedType === "quarterPipe"
+            ? { direction: "se" }
+            : selectedType === "halfPipe"
+              ? { orientation: "bottom" }
+              : undefined,
     };
 
     onPlaceContraption(newContraption);

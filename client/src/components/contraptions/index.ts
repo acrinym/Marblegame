@@ -4,6 +4,8 @@ export * from "./WaterJetPropulsor";
 export * from "./Spinner";
 export * from "./TriggeredDiverter";
 export * from "./Painter";
+export * from "./CornerCatcher";
+export * from "./CurvedTrack";
 
 export type ContraptionType = 
   | "diverter"
@@ -12,7 +14,10 @@ export type ContraptionType =
   | "spinner"
   | "triggeredDiverter"
   | "painter"
+  | "cornerCatcher"
   | "curvedTrack"
+  | "quarterPipe"
+  | "halfPipe"
   | "vortexFunnel"
   | "exitBin";
 
