@@ -77,3 +77,63 @@ Preferred communication style: Simple, everyday language.
 - Drizzle Kit for database migrations
 
 **Asset Support**: The build configuration explicitly supports 3D model formats (GLTF, GLB) and audio files (MP3, OGG, WAV), indicating planned multimedia features.
+
+## Level Design System
+
+### JSON-Based Level Definition
+
+Levels are defined as JSON files in `client/src/levels/`. The system uses an **anchoring approach** where component positions are calculated based on parent-child port connections, not absolute coordinates.
+
+**Key Files:**
+- `client/src/lib/LevelLoader.ts` - Parses JSON and calculates anchored positions
+- `client/src/levels/level1_thales.json` - Example level topology
+- `docs/PATHING_LOGIC.md` - Full documentation of the anchoring system
+- `docs/COMPONENT_PIPELINE.md` - Component physics specifications
+
+### How to Define a Level
+
+1. **Trace the marble path** in the original game by hand
+2. **Write the chain**: `Funnel -> Track A -> Diverter (left: Track B, right: Track C) -> Bins`
+3. **Convert to JSON** with `anchoredTo` and `anchorPort` fields
+
+### JSON Component Structure
+
+```json
+{
+  "id": "track_1",
+  "type": "straightTrack",
+  "anchoredTo": "funnel_1",
+  "anchorPort": "bottom",
+  "properties": { "length": 200, "angle": 45 },
+  "next": "diverter_1"
+}
+```
+
+**Fields:**
+- `id`: Unique identifier
+- `type`: Component type (entryFunnel, straightTrack, curvedTrack, diverter, cannon, exitBin, etc.)
+- `anchoredTo`: ID of parent component (or use absolute `x`, `y` for root components)
+- `anchorPort`: Which exit port to anchor to (bottom, left, right)
+- `properties`: Component-specific settings (length, angle, color, etc.)
+- `next`/`outputs`: Downstream connections
+
+### Port System
+
+Each component defines entry and exit ports:
+- **Entry Port**: Where marbles enter (top of component)
+- **Exit Ports**: Where marbles exit (bottom, left, right depending on component)
+
+The LevelLoader snaps each component's entry port to its parent's specified exit port.
+
+### Type Mapping
+
+JSON types are mapped to physics engine types:
+- `straightTrack` -> `track`
+- `curvedTrack` -> `spiralTrack`
+
+### Important Notes
+
+- **Do NOT guess positions** - always use anchoring
+- **Angles in straightTrack are degrees** (0-360)
+- **Angles in track are radians** (internal physics)
+- **Air connections** (cannon trajectories) use absolute positioning for the target
