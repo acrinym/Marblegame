@@ -53,9 +53,9 @@ const TYPE_MAPPING: Record<string, string> = {
 
 const PORT_DEFINITIONS: Record<string, (props: any) => { entryOffset: { x: number; y: number }; exits: Record<string, { x: number; y: number; direction: number }> }> = {
   entryFunnel: () => ({
-    entryOffset: { x: -60, y: -50 },
+    entryOffset: { x: 0, y: -40 },
     exits: {
-      bottom: { x: 40, y: 50, direction: Math.PI / 4 }
+      bottom: { x: 0, y: 50, direction: Math.PI / 2 }
     }
   }),
   

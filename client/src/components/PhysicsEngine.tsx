@@ -682,37 +682,46 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   };
 
   const createEntryFunnel = (x: number, y: number, id: string) => {
-    const slatLength = 50;
-    const slatThickness = 6;
-    const slats: Matter.Body[] = [];
+    const wallLength = 60;
+    const wallThickness = 6;
+    const funnelAngle = Math.PI / 6;
+    const bottomGap = 50;
     
-    const slatConfig = [
-      { offsetX: -60, offsetY: -30, angle: Math.PI / 8 },
-      { offsetX: -20, offsetY: 0, angle: Math.PI / 5 },
-      { offsetX: 20, offsetY: 30, angle: Math.PI / 4 },
-    ];
+    const leftWall = Matter.Bodies.rectangle(
+      x - bottomGap / 2 - (wallLength / 2) * Math.sin(funnelAngle),
+      y - (wallLength / 2) * Math.cos(funnelAngle),
+      wallThickness, 
+      wallLength, 
+      {
+        isStatic: true,
+        angle: -funnelAngle,
+        render: {
+          fillStyle: "#c9a66b",
+          strokeStyle: "#a68b5b",
+          lineWidth: 2,
+        },
+        label: `entryFunnel-${id}-left`,
+      }
+    );
     
-    slatConfig.forEach((config, index) => {
-      const slat = Matter.Bodies.rectangle(
-        x + config.offsetX,
-        y + config.offsetY,
-        slatLength,
-        slatThickness,
-        {
-          isStatic: true,
-          angle: config.angle,
-          render: {
-            fillStyle: "#c9a66b",
-            strokeStyle: "#a68b5b",
-            lineWidth: 2,
-          },
-          label: `entryFunnel-${id}-slat-${index}`,
-        }
-      );
-      slats.push(slat);
-    });
+    const rightWall = Matter.Bodies.rectangle(
+      x + bottomGap / 2 + (wallLength / 2) * Math.sin(funnelAngle),
+      y - (wallLength / 2) * Math.cos(funnelAngle),
+      wallThickness, 
+      wallLength, 
+      {
+        isStatic: true,
+        angle: funnelAngle,
+        render: {
+          fillStyle: "#c9a66b",
+          strokeStyle: "#a68b5b",
+          lineWidth: 2,
+        },
+        label: `entryFunnel-${id}-right`,
+      }
+    );
     
-    Matter.Composite.add(engineRef.current!.world, slats);
+    Matter.Composite.add(engineRef.current!.world, [leftWall, rightWall]);
     
     return Matter.Body.create({
       parts: [],
@@ -819,8 +828,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     
     if (entryFunnelsRef.current.length > 0) {
       const funnel = entryFunnelsRef.current[funnelIndex % entryFunnelsRef.current.length];
-      dropX = funnel.x - 60;
-      dropY = funnel.y - 50;
+      dropX = funnel.x;
+      dropY = funnel.y - 40;
     }
 
     const props = MARBLE_PROPERTIES[color];
