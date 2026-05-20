@@ -162,7 +162,7 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         width,
         height,
         wireframes: false,
-        background: "#1a1a2e",
+        background: "#0d1117", // Dark blueprint background
         showAngleIndicator: false,
         pixelRatio: window.devicePixelRatio,
       },
