@@ -293,17 +293,50 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
             break;
           case "track":
             const trackLength = state?.length || 100;
-            const trackBody = Matter.Bodies.rectangle(x, y, trackLength, 8, {
-              isStatic: true,
-              angle: angle,
-              render: { 
-                fillStyle: state?.color || "#d4a574", 
-                strokeStyle: "#b8935f", 
-                lineWidth: 2 
-              },
-              label: `track-${id}`,
-            });
-            Matter.Composite.add(world, trackBody);
+            const trackWidth = 6;
+            const railGap = 24; // Gap between rails (marble passes inside)
+            
+            // Calculate perpendicular offset for rails
+            const perpAngle = angle + Math.PI / 2;
+            const innerOffset = railGap / 2 - trackWidth / 2;
+            const outerOffset = railGap / 2 + trackWidth / 2;
+            
+            // Create two parallel rails (channel effect)
+            const innerRail = Matter.Bodies.rectangle(
+              x + Math.cos(perpAngle) * innerOffset,
+              y + Math.sin(perpAngle) * innerOffset,
+              trackLength,
+              trackWidth,
+              {
+                isStatic: true,
+                angle: angle,
+                render: { 
+                  fillStyle: "#c9a66b", // Wood color
+                  strokeStyle: "#8b6914", 
+                  lineWidth: 1
+                },
+                label: `track-inner-${id}`,
+              }
+            );
+            
+            const outerRail = Matter.Bodies.rectangle(
+              x + Math.cos(perpAngle) * outerOffset,
+              y + Math.sin(perpAngle) * outerOffset,
+              trackLength,
+              trackWidth,
+              {
+                isStatic: true,
+                angle: angle,
+                render: { 
+                  fillStyle: "#c9a66b",
+                  strokeStyle: "#8b6914",
+                  lineWidth: 1
+                },
+                label: `track-outer-${id}`,
+              }
+            );
+            
+            Matter.Composite.add(world, [innerRail, outerRail]);
             break;
           case "entryFunnel":
             const funnelBody = createEntryFunnel(x, y, id);
@@ -802,37 +835,48 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
 
   const createCurvedTrack = (startX: number, startY: number) => {
     const segments: Matter.Body[] = [];
-    const numSegments = 10;
+    const numSegments = 20; // More segments for smoother curve
     const radius = 200;
     const angleStart = -Math.PI / 4;
     const angleEnd = Math.PI / 4;
+    const railGap = 24; // Gap between inner and outer rail
+    const railWidth = 6;
 
-    for (let i = 0; i < numSegments; i++) {
-      const angle = angleStart + (angleEnd - angleStart) * (i / numSegments);
-      const nextAngle = angleStart + (angleEnd - angleStart) * ((i + 1) / numSegments);
+    // Create two parallel curves (rails)
+    for (let rail = 0; rail < 2; rail++) {
+      const offset = rail === 0 ? -railGap / 2 : railGap / 2;
       
-      const x1 = startX + Math.cos(angle) * radius;
-      const y1 = startY + Math.sin(angle) * radius;
-      const x2 = startX + Math.cos(nextAngle) * radius;
-      const y2 = startY + Math.sin(nextAngle) * radius;
-      
-      const centerX = (x1 + x2) / 2;
-      const centerY = (y1 + y2) / 2;
-      const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-      const segmentAngle = Math.atan2(y2 - y1, x2 - x1);
-      
-      const segment = Matter.Bodies.rectangle(centerX, centerY, length, 8, {
-        isStatic: true,
-        angle: segmentAngle,
-        render: {
-          fillStyle: "#d4a574",
-          strokeStyle: "#b8935f",
-          lineWidth: 2,
-        },
-        label: "curvedTrack",
-      });
-      
-      segments.push(segment);
+      for (let i = 0; i < numSegments; i++) {
+        const angle = angleStart + (angleEnd - angleStart) * (i / numSegments);
+        const nextAngle = angleStart + (angleEnd - angleStart) * ((i + 1) / numSegments);
+        
+        // Offset the radius for inner/outer rail
+        const r1 = radius + offset;
+        const r2 = radius + offset;
+        
+        const x1 = startX + Math.cos(angle) * r1;
+        const y1 = startY + Math.sin(angle) * r1;
+        const x2 = startX + Math.cos(nextAngle) * r2;
+        const y2 = startY + Math.sin(nextAngle) * r2;
+        
+        const centerX = (x1 + x2) / 2;
+        const centerY = (y1 + y2) / 2;
+        const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        const segmentAngle = Math.atan2(y2 - y1, x2 - x1);
+        
+        const segment = Matter.Bodies.rectangle(centerX, centerY, length, railWidth, {
+          isStatic: true,
+          angle: segmentAngle,
+          render: {
+            fillStyle: "#c9a66b", // Wood rail color
+            strokeStyle: "#8b6914",
+            lineWidth: 1,
+          },
+          label: `curvedTrack-${rail}-${i}`,
+        });
+        
+        segments.push(segment);
+      }
     }
 
     return segments;
