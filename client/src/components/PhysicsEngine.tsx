@@ -162,7 +162,7 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         width,
         height,
         wireframes: false,
-        background: "#0d1117", // Dark blueprint background
+        background: "#F5E6C8", // Parchment/cream background like original Marble Drop
         showAngleIndicator: false,
         pixelRatio: window.devicePixelRatio,
       },
@@ -301,7 +301,7 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
             const innerOffset = railGap / 2 - trackWidth / 2;
             const outerOffset = railGap / 2 + trackWidth / 2;
             
-            // Create two parallel rails (channel effect)
+            // Create two parallel rails (channel effect) - Brass colored
             const innerRail = Matter.Bodies.rectangle(
               x + Math.cos(perpAngle) * innerOffset,
               y + Math.sin(perpAngle) * innerOffset,
@@ -311,8 +311,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
                 isStatic: true,
                 angle: angle,
                 render: { 
-                  fillStyle: "#c9a66b", // Wood color
-                  strokeStyle: "#8b6914", 
+                  fillStyle: "#B5A642", // Brass/gold color
+                  strokeStyle: "#8B7500", 
                   lineWidth: 1
                 },
                 label: `track-inner-${id}`,
@@ -328,8 +328,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
                 isStatic: true,
                 angle: angle,
                 render: { 
-                  fillStyle: "#c9a66b",
-                  strokeStyle: "#8b6914",
+                  fillStyle: "#B5A642",
+                  strokeStyle: "#8B7500",
                   lineWidth: 1
                 },
                 label: `track-outer-${id}`,
@@ -722,6 +722,10 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     const funnelAngle = Math.PI / 6;
     const bottomGap = 35; // Gap for marble to pass through
     
+    // Funnel/vortex - brass colored like original
+    const funnelColor = "#B5A642"; // Brass
+    const funnelStroke = "#8B7500";
+    
     const leftWall = Matter.Bodies.rectangle(
       x - bottomGap / 2 - (wallLength / 2) * Math.sin(funnelAngle),
       y - (wallLength / 2) * Math.cos(funnelAngle),
@@ -731,8 +735,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         isStatic: true,
         angle: -funnelAngle,
         render: {
-          fillStyle: "#c9a66b",
-          strokeStyle: "#a68b5b",
+          fillStyle: funnelColor,
+          strokeStyle: funnelStroke,
           lineWidth: 2,
         },
         label: "vortexFunnel-left",
@@ -748,8 +752,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         isStatic: true,
         angle: funnelAngle,
         render: {
-          fillStyle: "#c9a66b",
-          strokeStyle: "#a68b5b",
+          fillStyle: funnelColor,
+          strokeStyle: funnelStroke,
           lineWidth: 2,
         },
         label: "vortexFunnel-right",
@@ -767,11 +771,16 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   };
 
   const createEntryFunnel = (x: number, y: number, id: string) => {
-    const wallLength = 60;
-    const wallThickness = 6;
-    const funnelAngle = Math.PI / 6;
-    const bottomGap = 50;
+    const wallLength = 70;
+    const wallThickness = 5;
+    const funnelAngle = Math.PI / 5;
+    const bottomGap = 32; // Small gap for marble
     
+    // Brass colored funnels like original
+    const funnelColor = "#B5A642";
+    const funnelStroke = "#8B7500";
+    
+    // Left wall - angled to form V
     const leftWall = Matter.Bodies.rectangle(
       x - bottomGap / 2 - (wallLength / 2) * Math.sin(funnelAngle),
       y - (wallLength / 2) * Math.cos(funnelAngle),
@@ -781,14 +790,15 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         isStatic: true,
         angle: -funnelAngle,
         render: {
-          fillStyle: "#c9a66b",
-          strokeStyle: "#a68b5b",
+          fillStyle: funnelColor,
+          strokeStyle: funnelStroke,
           lineWidth: 2,
         },
         label: `entryFunnel-${id}-left`,
       }
     );
     
+    // Right wall
     const rightWall = Matter.Bodies.rectangle(
       x + bottomGap / 2 + (wallLength / 2) * Math.sin(funnelAngle),
       y - (wallLength / 2) * Math.cos(funnelAngle),
@@ -798,8 +808,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         isStatic: true,
         angle: funnelAngle,
         render: {
-          fillStyle: "#c9a66b",
-          strokeStyle: "#a68b5b",
+          fillStyle: funnelColor,
+          strokeStyle: funnelStroke,
           lineWidth: 2,
         },
         label: `entryFunnel-${id}-right`,
@@ -818,17 +828,31 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     const binWidth = 70;
     const binHeight = 50;
     
+    // Custom styled bin - dark tray with colored strip like original
     const bin = Matter.Bodies.rectangle(x, y, binWidth, binHeight, {
       isStatic: true,
       isSensor: true,
       render: {
-        fillStyle: MARBLE_COLORS[color],
-        opacity: 0.6,
-        strokeStyle: MARBLE_COLORS[color],
-        lineWidth: 3,
+        // Dark tray with colored border (like collection basin)
+        fillStyle: "#2C2416", // Dark wood
+        strokeStyle: MARBLE_COLORS[color], // Colored strip
+        lineWidth: 4,
       },
       label: `exitBin-${color}`,
     });
+    
+    // Add colored indicator inside
+    const indicator = Matter.Bodies.circle(x, y, 8, {
+      isStatic: true,
+      isSensor: true,
+      render: {
+        fillStyle: MARBLE_COLORS[color],
+        opacity: 0.8,
+      },
+      label: `exitBin-indicator-${color}`,
+    });
+    
+    Matter.Composite.add(engineRef.current!.world, [bin, indicator]);
     
     return bin;
   };
@@ -868,8 +892,8 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
           isStatic: true,
           angle: segmentAngle,
           render: {
-            fillStyle: "#c9a66b", // Wood rail color
-            strokeStyle: "#8b6914",
+            fillStyle: "#B5A642", // Brass rail color
+            strokeStyle: "#8B7500",
             lineWidth: 1,
           },
           label: `curvedTrack-${rail}-${i}`,
@@ -894,19 +918,31 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
     colors.forEach((color, index) => {
       const x = startX + index * spacing;
       
+      // Main tray - dark wood with colored border
       const bin = Matter.Bodies.rectangle(x, y, binWidth, binHeight, {
         isStatic: true,
         isSensor: true,
         render: {
-          fillStyle: MARBLE_COLORS[color],
-          opacity: 0.5,
+          fillStyle: "#2C2416", // Dark wood tray
           strokeStyle: MARBLE_COLORS[color],
-          lineWidth: 3,
+          lineWidth: 4,
         },
         label: `exitBin-${color}`,
       });
       
+      // Colored dot indicator
+      const indicator = Matter.Bodies.circle(x, y, 10, {
+        isStatic: true,
+        isSensor: true,
+        render: {
+          fillStyle: MARBLE_COLORS[color],
+          opacity: 0.9,
+        },
+        label: `exitBin-dot-${color}`,
+      });
+      
       bins.push(bin);
+      bins.push(indicator);
       exitBinsRef.current.set(`exit-${color}`, { body: bin, color });
     });
 
@@ -959,12 +995,12 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   }, [isInitialized, clearAllMarbles]);
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center bg-gray-900">
+    <div className="relative w-full h-full flex items-center justify-center bg-[#F5E6C8]">
       <canvas
         ref={canvasRef}
         width={1200}
         height={800}
-        className="border-4 border-gray-700 rounded-lg shadow-2xl"
+        className="border-4 border-[#8B7500] rounded-lg shadow-2xl"
       />
     </div>
   );
