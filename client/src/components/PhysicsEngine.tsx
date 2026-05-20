@@ -403,10 +403,25 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
         const qPipe2 = createQuarterPipe(world, 900, 350, "qpipe-2", "sw", 60);
         curvedTracksRef.current.set("qpipe-2", qPipe2);
         
+        // Create connected path from funnel to rest of machine
+        // Funnel exit is around (600, 135), connect it to the diverters/main system
         const vortexFunnel = createVortexFunnel(600, 100);
+        
+        // Add straight track/ramp connecting funnel to the diverters below
+        const funnelToDiverter = Matter.Bodies.rectangle(600, 260, 180, 8, {
+          isStatic: true,
+          angle: Math.PI / 6, // 30 degrees down
+          render: { 
+            fillStyle: "#d4a574", 
+            strokeStyle: "#b8935f", 
+            lineWidth: 2 
+          },
+          label: "funnel-ramp",
+        });
+        
         const curvedTrack = createCurvedTrack(600, 250);
         const exitBins = createExitBins(w, h);
-        Matter.Composite.add(world, [vortexFunnel, ...curvedTrack, ...exitBins]);
+        Matter.Composite.add(world, [vortexFunnel, funnelToDiverter, ...curvedTrack, ...exitBins]);
         
         createGuideRails(world);
       }
@@ -668,17 +683,54 @@ export const PhysicsEngine = ({ onMarbleReachExit, onMarbleLost, levelContraptio
   };
 
   const createVortexFunnel = (x: number, y: number) => {
-    const funnel = Matter.Bodies.trapezoid(x, y, 80, 60, 0.5, {
+    // Real V-shaped funnel with gap at bottom - likeEntryFunnel
+    const wallLength = 60;
+    const wallThickness = 6;
+    const funnelAngle = Math.PI / 6;
+    const bottomGap = 35; // Gap for marble to pass through
+    
+    const leftWall = Matter.Bodies.rectangle(
+      x - bottomGap / 2 - (wallLength / 2) * Math.sin(funnelAngle),
+      y - (wallLength / 2) * Math.cos(funnelAngle),
+      wallThickness, 
+      wallLength, 
+      {
+        isStatic: true,
+        angle: -funnelAngle,
+        render: {
+          fillStyle: "#c9a66b",
+          strokeStyle: "#a68b5b",
+          lineWidth: 2,
+        },
+        label: "vortexFunnel-left",
+      }
+    );
+    
+    const rightWall = Matter.Bodies.rectangle(
+      x + bottomGap / 2 + (wallLength / 2) * Math.sin(funnelAngle),
+      y - (wallLength / 2) * Math.cos(funnelAngle),
+      wallThickness, 
+      wallLength, 
+      {
+        isStatic: true,
+        angle: funnelAngle,
+        render: {
+          fillStyle: "#c9a66b",
+          strokeStyle: "#a68b5b",
+          lineWidth: 2,
+        },
+        label: "vortexFunnel-right",
+      }
+    );
+    
+    // Funnel exit position (for connecting to tracks)
+    const exitY = y + bottomGap / 2;
+    
+    return Matter.Body.create({
+      parts: [leftWall, rightWall],
       isStatic: true,
-      render: {
-        fillStyle: "#4a9eff",
-        strokeStyle: "#6bbfff",
-        lineWidth: 2,
-      },
       label: "vortexFunnel",
     });
-
-    return funnel;
   };
 
   const createEntryFunnel = (x: number, y: number, id: string) => {
